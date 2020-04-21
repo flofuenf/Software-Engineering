@@ -61,7 +61,7 @@ containerize_app:
   stage: containerize
   allow_failure: false
   only:
-    - master
+    - tags
   except:
     - branches
   script:
