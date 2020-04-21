@@ -26,6 +26,11 @@ type User struct {
 	Birth      int64  `json:"birth,omitempty"`
 }
 
+// UserWrapper describes a Commune Object
+type UserWrapper struct {
+	Root []User `json:"query"`
+}
+
 // Address describes an Address Object
 type Address struct {
 	GUID       string `json:"uid,omitempty"`
