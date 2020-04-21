@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
+
 import '../models/address.dart';
 
 import '../models/duty.dart';
 import '../models/member.dart';
 
-class Commune {
+class Commune with ChangeNotifier{
   String uid;
   String name;
   String description;

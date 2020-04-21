@@ -1,18 +1,22 @@
 import 'package:CommuneIsm/providers/app_state.dart';
+import 'package:CommuneIsm/widgets/menu_drawer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class DebugScreen extends StatelessWidget{
+class DebugScreen extends StatelessWidget {
+  static const routeName = "/debug";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Debug"),
       ),
+      drawer: MenuDrawer(),
       body: Consumer<AppState>(
-        builder: (ctx, app, _)=> Center(
+        builder: (ctx, app, _) => Center(
           child: Column(
             children: <Widget>[
               Text(app.commune.uid),

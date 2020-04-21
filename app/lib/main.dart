@@ -1,8 +1,9 @@
 import 'package:CommuneIsm/screens/debug.dart';
+import 'package:CommuneIsm/screens/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/commune.dart';
 import 'providers/app_state.dart';
+import 'screens/dashboard.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,24 +19,32 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<AppState>(
-        builder: (ctx, app, _) =>
-            MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'CommuneIsm',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              home: app.isLoaded ? DebugScreen() : FutureBuilder(
+        builder: (ctx, app, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'CommuneIsm',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: app.isLoaded
+              ? Dashboard()
+              : FutureBuilder(
                   future: app.loadApp(),
                   builder: (ctx, comResultSnapshot) =>
-                  comResultSnapshot.connectionState == ConnectionState.waiting
-                      ? Center(child: CircularProgressIndicator(),)
-                      : Center(child: CircularProgressIndicator(),)
+                      comResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            )),
+          routes: {
+            DebugScreen.routeName: (ctx) => DebugScreen(),
+            CommuneOverview.routeName: (ctx) => CommuneOverview(),
+          },
+        ),
       ),
-      routes: {},
-    ),)
-    ,
     );
   }
 }
