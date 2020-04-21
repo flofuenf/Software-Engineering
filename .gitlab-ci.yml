@@ -8,6 +8,7 @@ before_script:
   - echo $GOPROXY
   - echo $GO111MODULE
   - ls -la
+  - cp scripts/* /usr/local/bin
 
 stages:
   - build
