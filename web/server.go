@@ -13,15 +13,15 @@ import (
 
 // Server describes the structure of the HTTP Server
 type Server struct {
-	sql     *data.SQL
+	graph   *data.DGraph
 	router  *gin.Engine
 	address string
 }
 
 // SetupServer declares the HTTP Server for further use
-func SetupServer(sql *data.SQL, port int) *Server {
+func SetupServer(graph *data.DGraph, port int) *Server {
 	server := &Server{
-		sql:     sql,
+		graph:   graph,
 		router:  gin.Default(),
 		address: ":" + strconv.Itoa(port),
 	}

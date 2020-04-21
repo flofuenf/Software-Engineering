@@ -12,11 +12,8 @@ import (
 )
 
 var (
-	port      = flag.Int("port", 8000, "Port for your GO Endpoint")
-	dbName    = flag.String("dbName", "web524_db5", "Your SQL Database Name")
-	dbAddress = flag.String("dbAddress", "www.dwarftech.de:3306", "Your SQL Database Address")
-	dbUser    = flag.String("dbUser", "web524", "Your SQL Database User")
-	dbPass    = flag.String("dbPass", "HgeRUI_18ooC", "Your SQL Database Password")
+	port    = flag.Int("port", 8000, "Port for your GO Endpoint")
+	graphDB = flag.String("graph", "192.168.99.100:9082", "Your SQL Database Name")
 )
 
 func main() {
@@ -28,12 +25,12 @@ func main() {
 }
 
 func run() error {
-	sql, err := data.SetupSQL(*dbUser, *dbPass, *dbAddress, *dbName)
+	graph, err := data.SetupGraphClient(*graphDB)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	defer sql.Close()
+	defer graph.Close()
 
-	server := web.SetupServer(sql, *port)
+	server := web.SetupServer(graph, *port)
 	return server.Run()
 }

@@ -1,0 +1,36 @@
+type dgraph.graphql{
+    dgraph.graphql.schema
+}
+
+type Commune {
+    name
+    description
+    created
+    moderators
+    address
+}
+
+type User {
+    name
+    created
+    birth
+    member_of
+}
+
+type Address {
+    street
+    city
+    zip
+}
+
+name: string .
+decription: string .
+created: int .
+moderators: [uid] .
+address : uid .
+birth: int .
+member_of: uid @reverse .
+street: string .
+city: string .
+zip: string .
+dgraph.graphql.schema: string .
