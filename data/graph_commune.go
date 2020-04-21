@@ -56,3 +56,9 @@ func (s *DGraph) JoinCommuneByID(comID string, usrID string) error {
 	err := s.mutateSinglePred(comID, "members", usrID)
 	return errors.WithStack(err)
 }
+
+// AddDutyByID sets the Commune for a User
+func (s *DGraph) AddDutyByID(comID string, dutID string) error {
+	err := s.mutateSinglePred(comID, "duties", dutID)
+	return errors.WithStack(err)
+}

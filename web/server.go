@@ -40,4 +40,6 @@ func (s *Server) registerEndpoints() {
 
 	s.router.POST("/user", s.receiveUser)
 	s.router.GET("/user", s.getUser)
+
+	s.router.POST("/duty", s.receiveDuty)
 }
