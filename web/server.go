@@ -34,6 +34,9 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) registerEndpoints() {
+	s.router.GET("/commune", s.getCommune)
 	s.router.POST("/commune", s.receiveCommune)
+
 	s.router.POST("/user", s.receiveUser)
+	s.router.POST("/joinCommune", s.joinCommune)
 }

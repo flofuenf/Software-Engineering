@@ -6,15 +6,15 @@ type Commune {
     name
     description
     created
-    moderators
+    members
     address
+    duties
 }
 
 type User {
     name
     created
     birth
-    member_of
 }
 
 type Address {
@@ -24,14 +24,30 @@ type Address {
     zip
 }
 
+type Duty {
+    created
+    changed
+    name
+    description
+    lastDone
+    nextDone
+    rotationTime
+    rotationList
+}
+
 name: string .
 description: string .
 created: int .
-moderators: [uid] .
+members: [uid] .
 address : uid .
 birth: int .
-member_of: uid @reverse .
 street: string .
 city: string .
 zip: string .
+changed: int .
+lastDone: int .
+nextDone: int .
+rotationTime: int .
+rotationList: [uid] .
+duties: [uid] .
 dgraph.graphql.schema: string .
