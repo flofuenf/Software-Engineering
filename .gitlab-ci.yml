@@ -56,27 +56,26 @@ gomod-check:
     - go mod download
     - go_mod_tidy.sh
 
-#containerize_app:
-#  image: docker:stable
-#  stage: containerize
-#  allow_failure: false
-#  tags:
-#    - unix
-#    - docker
-#    - multi
-#  only:
-#    - tags
-#  except:
-#    - branches
-#  variables:
-#    DOCKER_REGISTRY: snapshotregistry.rrdc.de:443
-#    IMAGE_TAG: $DOCKER_REGISTRY/pizza:$CI_COMMIT_TAG
-#  script:
-#    - echo $CI_COMMIT_TAG
+containerize_app:
+  image: docker:stable
+  stage: containerize
+  allow_failure: false
+  only:
+    - master
+  except:
+    - branches
+  script:
+    - docker info
+    - docker build -t $LATEST_VER -t $MAJOR_VER -t $MINOR_VER -t $PATCH_VER .
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    - docker push $LATEST_VER && docker image rm $LATEST_VER
+    - docker push $MAJOR_VER && docker image rm $MAJOR_VER
+    - docker push $MINOR_VER && docker image rm $MINOR_VER
+    - docker push $PATCH_VER && docker image rm $PATCH_VER
+    #    - echo $CI_COMMIT_TAG
 #    - echo $IMAGE_TAG
-#    - echo $CI_REGISTRY_IMAGE
+    #    - echo $CI_REGISTRY_IMAGE
 #    - echo $CI_COMMIT_REF_SLUG
-#    - docker build -t $IMAGE_TAG -f ./Dockerfile .
-#    - docker push $IMAGE_TAG
+#    - docker build -f ./Dockerfile .
 #    - docker rmi $(docker images --quiet --filter "dangling=true") || true
 #    - docker volume rm $(docker volume ls -qf dangling=true) || true
