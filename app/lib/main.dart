@@ -2,6 +2,7 @@ import 'package:CommuneIsm/screens/debug.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/commune.dart';
+import 'providers/app_state.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,11 +14,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: Commune(),
+          value: AppState(),
         ),
       ],
-      child: Consumer<Commune>(
-        builder: (ctx, com, _) =>
+      child: Consumer<AppState>(
+        builder: (ctx, app, _) =>
             MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'CommuneIsm',
@@ -25,8 +26,8 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.blue,
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              home: com.isLoaded ? DebugScreen() : FutureBuilder(
-                  future: com.fetchCommune(),
+              home: app.isLoaded ? DebugScreen() : FutureBuilder(
+                  future: app.loadApp(),
                   builder: (ctx, comResultSnapshot) =>
                   comResultSnapshot.connectionState == ConnectionState.waiting
                       ? Center(child: CircularProgressIndicator(),)

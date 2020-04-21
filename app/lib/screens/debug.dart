@@ -1,5 +1,7 @@
-import '../providers/commune.dart';
+import 'package:CommuneIsm/providers/app_state.dart';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DebugScreen extends StatelessWidget{
@@ -9,14 +11,18 @@ class DebugScreen extends StatelessWidget{
       appBar: AppBar(
         title: Text("Debug"),
       ),
-      body: Consumer<Commune>(
-        builder: (ctx, com, _)=> Center(
+      body: Consumer<AppState>(
+        builder: (ctx, app, _)=> Center(
           child: Column(
             children: <Widget>[
-              Text(com.uid),
-              Text(com.name),
-              Text(com.description),
-              Text(com.address.toString()),
+              Text(app.commune.uid),
+              Text(app.commune.name),
+              Text(app.commune.description),
+              Text(app.commune.address.toString()),
+              Text("##########################"),
+              Text(app.user.uid),
+              Text(app.user.name),
+              Text(DateFormat('dd--MM--yyy').format(app.user.birth)),
             ],
           ),
         ),

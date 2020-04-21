@@ -40,7 +40,7 @@ func (s *Server) registerEndpoints() {
 	s.router.POST("/joinCommune", s.joinCommune)
 
 	s.router.POST("/user", s.receiveUser)
-	s.router.GET("/user", s.getUser)
+	s.router.POST("/userGet", s.getUser)
 
 	s.router.POST("/duty", s.receiveDuty)
 }
