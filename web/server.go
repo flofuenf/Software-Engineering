@@ -3,8 +3,6 @@ package web
 import (
 	"strconv"
 
-	"git.rrdc.de/lib/lg"
-
 	"git.rrdc.de/lib/errors"
 	"gitlab.com/flofuenf/communeism/data"
 
@@ -36,5 +34,6 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) registerEndpoints() {
-	lg.Println("Endpoints")
+	s.router.POST("/commune", s.receiveCommune)
+	s.router.POST("/user", s.receiveUser)
 }

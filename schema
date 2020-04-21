@@ -18,13 +18,14 @@ type User {
 }
 
 type Address {
+    created
     street
     city
     zip
 }
 
 name: string .
-decription: string .
+description: string .
 created: int .
 moderators: [uid] .
 address : uid .

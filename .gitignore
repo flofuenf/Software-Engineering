@@ -1,1 +1,38 @@
-.idea
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub related
+***/doc/api/
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+app/.pub-cache/
+app/.pub/
+app/build/
+
+# Web related
+app/lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app/app.*.symbols
+
+# Obfuscation related
+app/app.*.map.json
+
+# Exceptions to above rules.
+app/!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
