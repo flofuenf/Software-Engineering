@@ -23,6 +23,7 @@ func SetupServer(graph *data.DGraph, port int) *Server {
 		router:  gin.Default(),
 		address: ":" + strconv.Itoa(port),
 	}
+	server.router.Use(corsMiddleware())
 	server.registerEndpoints()
 	return server
 }
@@ -34,7 +35,7 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) registerEndpoints() {
-	s.router.GET("/commune", s.getCommune)
+	s.router.POST("/communeGet", s.getCommune)
 	s.router.POST("/commune", s.receiveCommune)
 	s.router.POST("/joinCommune", s.joinCommune)
 
@@ -42,4 +43,21 @@ func (s *Server) registerEndpoints() {
 	s.router.GET("/user", s.getUser)
 
 	s.router.POST("/duty", s.receiveDuty)
+}
+
+func corsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers",
+			"Content-Type, Content-Length, Accept-Encoding, "+
+				"X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }
