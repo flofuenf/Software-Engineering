@@ -22,6 +22,10 @@ class AppState with ChangeNotifier {
     return (user != null && commune != null);
   }
 
+  String get comID{
+    return commune.uid;
+  }
+
   Future<void> initApp() async {
     const comID = '0x20';
     const userID = '0x22';

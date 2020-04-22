@@ -52,6 +52,43 @@ class MenuDrawer extends StatelessWidget {
                 Divider(),
                 ListTile(
                   leading: Icon(
+                    Icons.work,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    "Duties",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacementNamed('/duties');
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  leading: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    "Consumables",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacementNamed('/consumables');
+                  },
+                ),
+                Divider(
+                  thickness: 1.0,
+                  color: Colors.white,
+                ),
+                ListTile(
+                  leading: Icon(
                     Icons.bug_report,
                     color: Colors.white,
                   ),

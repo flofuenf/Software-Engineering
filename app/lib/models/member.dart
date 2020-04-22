@@ -9,7 +9,7 @@ class Member {
   Member({
     @required this.uid,
     @required this.name,
-    @required this.created,
-    @required this.birth,
+    this.created,
+    this.birth,
   });
 }

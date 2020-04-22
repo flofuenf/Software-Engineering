@@ -1,5 +1,9 @@
-import 'package:CommuneIsm/screens/debug.dart';
-import 'package:CommuneIsm/screens/overview.dart';
+import 'package:CommuneIsm/providers/duties.dart';
+
+import 'screens/consumables.dart';
+import 'screens/debug.dart';
+import 'screens/duties_screen.dart';
+import 'screens/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/app_state.dart';
@@ -17,13 +21,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: AppState(),
         ),
+        ChangeNotifierProvider.value(
+          value: Duties(),
+        ),
       ],
       child: Consumer<AppState>(
         builder: (ctx, app, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'CommuneIsm',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.grey,
+            accentColor: Colors.deepOrange,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           home: app.isLoaded
@@ -42,6 +50,8 @@ class MyApp extends StatelessWidget {
           routes: {
             DebugScreen.routeName: (ctx) => DebugScreen(),
             CommuneOverview.routeName: (ctx) => CommuneOverview(),
+            DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
+            ConsumablesScreen.routeName: (ctx) => ConsumablesScreen(),
           },
         ),
       ),

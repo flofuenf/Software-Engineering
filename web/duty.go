@@ -23,3 +23,18 @@ func (s *Server) receiveDuty(c *gin.Context) {
 
 	lib.Jsonify(c, com.Duties[0].GUID, 1, err)
 }
+
+func (s *Server) getDuties(c *gin.Context) {
+	var com data.Commune
+	err := c.BindJSON(&com)
+	if err != nil {
+		lg.PrintErr(err)
+	}
+
+	duties, count, err := s.graph.FetchDutiesByID(com.GUID)
+	if err != nil {
+		lg.PrintErr(err)
+	}
+
+	lib.Jsonify(c, duties, count, err)
+}
