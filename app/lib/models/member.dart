@@ -1,6 +1,7 @@
+import 'package:CommuneIsm/providers/user.dart';
 import 'package:flutter/material.dart';
 
-class Member {
+class Member{
   final String uid;
   final String name;
   final DateTime created;

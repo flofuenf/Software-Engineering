@@ -1,6 +1,7 @@
+import 'package:CommuneIsm/models/member.dart';
 import 'package:flutter/material.dart';
 
-class User with ChangeNotifier {
+class User extends Member with ChangeNotifier {
   DateTime created;
   String uid;
   String name;
