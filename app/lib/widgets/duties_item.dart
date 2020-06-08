@@ -101,7 +101,7 @@ class _DutiesItemState extends State<DutiesItem> {
                         padding: EdgeInsets.all(0),
                         iconSize: 20,
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/dutyedit');
+                          Navigator.of(context).pushNamed('/dutyedit', arguments: widget.duty);
                         }),
                     IconButton(
                         icon: Icon(Icons.check),

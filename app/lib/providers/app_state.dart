@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:CommuneIsm/models/member.dart';
+
 import '../models/address.dart';
 
 import '../helper/graph_helper.dart';
@@ -24,6 +26,10 @@ class AppState with ChangeNotifier {
 
   String get comID{
     return commune.uid;
+  }
+
+  List<Member> get members{
+    return this.commune.members;
   }
 
   Future<void> initApp() async {

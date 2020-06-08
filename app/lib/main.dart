@@ -1,6 +1,7 @@
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
 
+import 'providers/commune.dart';
 import 'screens/consumables.dart';
 import 'screens/debug.dart';
 import 'screens/duties_screen.dart';
@@ -24,6 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Duties(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Commune(),
         ),
       ],
       child: Consumer<AppState>(

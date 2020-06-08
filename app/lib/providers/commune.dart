@@ -23,4 +23,8 @@ class Commune with ChangeNotifier{
     this.members,
     this.duties,
   });
+
+  List<Member> get member{
+    return this.members;
+  }
 }

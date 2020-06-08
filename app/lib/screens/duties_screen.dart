@@ -50,6 +50,13 @@ class _DutyScreenState extends State<DutyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Putzdienste"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add_circle),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/dutyedit');
+              }),
+        ],
       ),
       drawer: MenuDrawer(),
       body: _isLoading

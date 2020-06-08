@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 import 'member.dart';
 
@@ -9,21 +8,21 @@ class Duty {
   final String name;
   final String description;
   final DateTime lastDone;
-  final DateTime nextDone;
+  DateTime nextDone;
   final int rotationTime;
   final int rotationIndex;
   final List<Member> rotationList;
 
   Duty({
-    @required this.uid,
-    @required this.created,
-    @required this.changed,
-    @required this.name,
-    @required this.description,
-    @required this.lastDone,
-    @required this.nextDone,
-    @required this.rotationTime,
-    @required this.rotationIndex,
-    @required this.rotationList,
+    this.uid,
+    this.created,
+    this.changed,
+    this.name,
+    this.description,
+    this.lastDone,
+    this.nextDone,
+    this.rotationTime,
+    this.rotationIndex,
+    this.rotationList,
   });
 }
