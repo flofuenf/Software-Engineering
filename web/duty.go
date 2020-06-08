@@ -38,3 +38,15 @@ func (s *Server) getDuties(c *gin.Context) {
 
 	lib.Jsonify(c, duties, count, err)
 }
+
+func (s *Server) setDutyDone(c *gin.Context) {
+	var duty data.Duty
+	err := c.BindJSON(&duty)
+	if err != nil {
+		lg.PrintErr(err)
+	}
+
+	duty, count, err := s.graph.SetDutyAsDone(duty.GUID)
+
+	lib.Jsonify(c, duty, count, err)
+}

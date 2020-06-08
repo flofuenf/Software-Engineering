@@ -11,6 +11,7 @@ class Duty {
   final DateTime lastDone;
   final DateTime nextDone;
   final int rotationTime;
+  final int rotationIndex;
   final List<Member> rotationList;
 
   Duty({
@@ -22,6 +23,7 @@ class Duty {
     @required this.lastDone,
     @required this.nextDone,
     @required this.rotationTime,
+    @required this.rotationIndex,
     @required this.rotationList,
   });
 }

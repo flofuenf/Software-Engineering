@@ -1,4 +1,5 @@
 import 'package:CommuneIsm/providers/duties.dart';
+import 'package:CommuneIsm/screens/edit_duty_screen.dart';
 
 import 'screens/consumables.dart';
 import 'screens/debug.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
             CommuneOverview.routeName: (ctx) => CommuneOverview(),
             DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
             ConsumablesScreen.routeName: (ctx) => ConsumablesScreen(),
+            EditDutyScreen.routeName: (ctx) => EditDutyScreen(),
           },
         ),
       ),

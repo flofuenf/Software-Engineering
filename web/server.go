@@ -44,6 +44,7 @@ func (s *Server) registerEndpoints() {
 
 	s.router.POST("/duty", s.receiveDuty)
 	s.router.POST("/dutyGet", s.getDuties)
+	s.router.POST("/dutyDone", s.setDutyDone)
 }
 
 func corsMiddleware() gin.HandlerFunc {

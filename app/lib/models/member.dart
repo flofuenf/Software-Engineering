@@ -1,4 +1,3 @@
-import 'package:CommuneIsm/providers/user.dart';
 import 'package:flutter/material.dart';
 
 class Member{
