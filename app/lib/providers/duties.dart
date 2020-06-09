@@ -37,10 +37,12 @@ class Duties with ChangeNotifier {
           uid: data['uid'],
           name: data['name'],
           description: data['description'],
-          created: DateTime.fromMillisecondsSinceEpoch(data['created']* 1000),
+          created: DateTime.fromMillisecondsSinceEpoch(data['created'] * 1000),
           changed: DateTime.fromMillisecondsSinceEpoch(data['changed'] * 1000),
-          lastDone: DateTime.fromMillisecondsSinceEpoch(data['lastDone'] * 1000),
-          nextDone: DateTime.fromMillisecondsSinceEpoch(data['nextDone'] * 1000),
+          lastDone:
+              DateTime.fromMillisecondsSinceEpoch(data['lastDone'] * 1000),
+          nextDone:
+              DateTime.fromMillisecondsSinceEpoch(data['nextDone'] * 1000),
           rotationList: rotMember,
           rotationTime: data['rotationTime'],
           rotationIndex: data['rotationIndex'],
@@ -49,6 +51,52 @@ class Duties with ChangeNotifier {
       notifyListeners();
     } catch (err) {
       throw (err);
+    }
+  }
+
+  Future<void> updateDuty(Duty duty) async {
+    final index = items.indexWhere((item) => item.uid == duty.uid);
+
+    String buildRotationJSON(List<Member> list) {
+      StringBuffer sb = StringBuffer();
+      for (int i = 0; i < list.length; i++) {
+        sb.write('''
+        {
+          "uid": "${list[i].uid}"
+        }
+        ''');
+        if (i + 1 < list.length) {
+          sb.write(",");
+        }
+      }
+
+      return sb.toString();
+    }
+
+    if (index >= 0) {
+      try {
+        final body = '''
+        {
+          "uid": "${duty.uid}",
+          "name": "${duty.name}",
+          "description": "${duty.description}",
+          "rotationTime": ${duty.rotationTime},
+          "nextDone": ${duty.nextDone.millisecondsSinceEpoch / 1000},
+          "rotationList": [
+            ${buildRotationJSON(duty.rotationList)}
+          ]
+         }
+        ''';
+        var response = await GraphHelper.postSecure(body, "dutySet");
+        if (response == duty.uid) {
+          items[items.indexWhere((item) => item.uid == duty.uid)] = duty;
+          notifyListeners();
+        }
+      } catch (err) {
+        throw (err);
+      }
+    } else {
+      throw ("UID not found");
     }
   }
 
@@ -72,10 +120,14 @@ class Duties with ChangeNotifier {
             uid: duty['uid'],
             name: duty['name'],
             description: duty['description'],
-            created: DateTime.fromMillisecondsSinceEpoch(duty['created'] * 1000),
-            changed: DateTime.fromMillisecondsSinceEpoch(duty['changed'] * 1000),
-            lastDone: DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000),
-            nextDone: DateTime.fromMillisecondsSinceEpoch(duty['nextDone'] * 1000),
+            created:
+                DateTime.fromMillisecondsSinceEpoch(duty['created'] * 1000),
+            changed:
+                DateTime.fromMillisecondsSinceEpoch(duty['changed'] * 1000),
+            lastDone:
+                DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000),
+            nextDone:
+                DateTime.fromMillisecondsSinceEpoch(duty['nextDone'] * 1000),
             rotationList: rotMember,
             rotationTime: duty['rotationTime'],
             rotationIndex: duty['rotationIndex'],

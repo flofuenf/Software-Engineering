@@ -5,11 +5,11 @@ class Duty {
   final String uid;
   final DateTime created;
   final DateTime changed;
-  final String name;
-  final String description;
+  String name;
+  String description;
   final DateTime lastDone;
   DateTime nextDone;
-  final int rotationTime;
+  int rotationTime;
   final int rotationIndex;
   List<Member> rotationList;
 

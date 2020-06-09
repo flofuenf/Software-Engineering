@@ -63,8 +63,14 @@ func (s *DGraph) JoinCommuneByID(comID string, usrID string) error {
 	return errors.WithStack(err)
 }
 
-// AddDutyByID sets the Commune for a User
+// AddDutyByID sets the Duty for a Commune
 func (s *DGraph) AddDutyByID(comID string, dutID string) error {
 	err := s.mutateSinglePred(comID, "duties", dutID)
+	return errors.WithStack(err)
+}
+
+// AddConsumableByID sets the Consumable for a Commune
+func (s *DGraph) AddConsumableByID(comID string, conID string) error {
+	err := s.mutateSinglePred(comID, "consumables", conID)
 	return errors.WithStack(err)
 }

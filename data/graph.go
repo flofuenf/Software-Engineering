@@ -150,27 +150,27 @@ func (s *DGraph) deleteObjectDB(uid, pred, obj string) error {
 	return errors.WithStack(err)
 }
 
-// func (s *DGraph) deletePredicateDB(uid, pred string) error {
-// 	req := s.client.NewTxn()
-//
-// 	mu := &api.Mutation{
-// 		Del: []*api.NQuad{
-// 			{
-// 				Subject:   uid,
-// 				Predicate: pred,
-// 				ObjectValue: &api.Value{
-// 					Val: &api.Value_DefaultVal{DefaultVal: "_STAR_ALL"}},
-// 			},
-// 		},
-// 		CommitNow: true,
-// 	}
-//
-// 	_, err := req.Mutate(s.ctx, mu)
-// 	if err != nil {
-// 		return errors.WithStack(err)
-// 	}
-// 	return errors.WithStack(err)
-// }
+func (s *DGraph) deletePredicateDB(uid, pred string) error {
+	req := s.client.NewTxn()
+
+	mu := &api.Mutation{
+		Del: []*api.NQuad{
+			{
+				Subject:   uid,
+				Predicate: pred,
+				ObjectValue: &api.Value{
+					Val: &api.Value_DefaultVal{DefaultVal: "_STAR_ALL"}},
+			},
+		},
+		CommitNow: true,
+	}
+
+	_, err := req.Mutate(s.ctx, mu)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return errors.WithStack(err)
+}
 
 func (s *DGraph) deleteEdgeDB(uid string) error {
 	req := s.client.NewTxn()

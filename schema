@@ -9,6 +9,7 @@ type Commune {
     members
     address
     duties
+    consumables
 }
 
 type User {
@@ -36,6 +37,16 @@ type Duty {
     rotationList
 }
 
+type Consumable{
+    created
+    changed
+    name
+    isNeeded
+    lastBought
+    rotationIndex
+    rotationList
+}
+
 name: string .
 description: string .
 created: int .
@@ -50,6 +61,9 @@ lastDone: int .
 nextDone: int .
 rotationTime: int .
 rotationList: [uid] .
+consumables: [uid] .
 duties: [uid] .
 rotationIndex: int .
+isNeeded: bool .
+lastBought: int .
 dgraph.graphql.schema: string .

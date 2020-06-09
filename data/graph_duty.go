@@ -15,10 +15,26 @@ func (s *DGraph) InsertDuty(duty *Duty) error {
 	duty.Created = time.Now().Unix()
 	duty.Changed = time.Now().Unix()
 	duty.LastDone = 0
+	duty.RotationIndex = 0
 	duty.NextDone = time.Now().Unix() + duty.RotationTime
 	uids, err := s.mutateDB(duty)
 	duty.GUID = uids[duty.DGraphType]
 	return err
+}
+
+// UpdateDuty updates a Duty
+func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
+	duty.DGraphType = "Duty"
+	duty.Changed = time.Now().Unix()
+
+	err := s.deletePredicateDB(duty.GUID, "rotationList")
+	if err == nil {
+		_, err := s.mutateDB(duty)
+		if err != nil {
+			lg.PrintErr(err)
+		}
+	}
+	return duty.GUID, 1, err
 }
 
 // SetDutyAsDone sets a Duty as done and recalculates the timestamps

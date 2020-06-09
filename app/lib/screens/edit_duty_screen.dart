@@ -2,6 +2,7 @@ import 'package:CommuneIsm/models/duty.dart';
 import 'package:CommuneIsm/models/member.dart';
 import 'package:CommuneIsm/models/rotation.dart';
 import 'package:CommuneIsm/providers/app_state.dart';
+import 'package:CommuneIsm/providers/duties.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +15,19 @@ class EditDutyScreen extends StatefulWidget {
 }
 
 class _EditDutyScreenState extends State<EditDutyScreen> {
+  final _nameFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+  final _dateFocusNode = FocusNode();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
   bool _isInit = true;
+  bool _isLoading = false;
   Duty duty;
   final _form = GlobalKey<FormState>();
   List<Member> members = [];
   List<DropdownMenuItem<Rotation>> _rotationList = [];
   Rotation _selectedRotation;
+  DateTime _selectedDate;
 
   @override
   void initState() {
@@ -37,6 +45,24 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       );
     }
     return items;
+  }
+
+  Future<void> showPopUp(String title, String text) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: Text(text),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Okay"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   bool checkOnMember(Member member) {
@@ -64,9 +90,47 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                 .indexWhere((rot) => rot.value.duration == duty.rotationTime)]
             .value;
       }
+      _nameController.text = duty.name;
+      _descriptionController.text = duty.description;
+      _selectedDate = duty.nextDone;
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _saveDuty() async {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
+
+    if(duty.nextDone == null){
+      await showPopUp("Error", "Bitte wähle ein Datum aus...");
+      return;
+    }
+
+    if(duty.rotationList.length < 1){
+      await showPopUp("Error", "Bitte wähle mindestens ein WG-Mitglied aus");
+      return;
+    }
+
+    duty.rotationTime = _selectedRotation.duration;
+    duty.name = _nameController.text;
+    duty.description = _descriptionController.text;
+    duty.nextDone = _selectedDate;
+
+    _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+
+    try{
+      await Provider.of<Duties>(context, listen: false).updateDuty(duty);
+    }catch(err){
+      throw(err);
+    }
+
+    print("saved");
   }
 
   @override
@@ -85,7 +149,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: () {},
+            onPressed: _saveDuty,
           ),
         ],
       ),
@@ -99,10 +163,22 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                 children: <Widget>[
                   Flexible(
                     child: TextFormField(
-                      initialValue: duty.name,
+                      focusNode: _nameFocusNode,
+                      controller: _nameController,
                       decoration: InputDecoration(
                         labelText: "Name",
                       ),
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context)
+                            .requestFocus(_descriptionFocusNode);
+                      },
+                      validator: (val) {
+                        if (val.isEmpty) {
+                          return 'Please provide a value.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -111,25 +187,40 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                 children: <Widget>[
                   Flexible(
                     child: TextFormField(
-                      initialValue: duty.description,
+                      focusNode: _descriptionFocusNode,
+                      controller: _descriptionController,
                       decoration: InputDecoration(
                         labelText: "Beschreibung",
                       ),
                       maxLines: 3,
                       keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_dateFocusNode);
+                      },
+                      validator: (val) {
+                        if (val.isEmpty) {
+                          return 'Please provide a value.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text(duty.nextDone == null
+                      Text(_selectedDate == null
                           ? 'Start-Datum wählen'
-                          : f.format(duty.nextDone)),
+                          : f.format(_selectedDate)),
                       RaisedButton(
+                        focusNode: _dateFocusNode,
                         child: Text("Pick a date"),
                         onPressed: () {
                           showDatePicker(
@@ -140,7 +231,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                             lastDate: DateTime.now().add(Duration(days: 30)),
                           ).then((date) {
                             setState(() {
-                              duty.nextDone = date;
+                              _selectedDate = date;
                             });
                           });
                         },
@@ -166,7 +257,8 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                               if (val) {
                                 duty.rotationList.add(e);
                               } else {
-                                duty.rotationList.removeWhere((item) => item.uid == e.uid);
+                                duty.rotationList
+                                    .removeWhere((item) => item.uid == e.uid);
                               }
                             });
                           },
