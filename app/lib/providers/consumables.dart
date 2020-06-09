@@ -18,6 +18,49 @@ class Consumables with ChangeNotifier {
     return items.indexWhere((duty) => duty.uid == uid);
   }
 
+  Future<void> updateConsumable(Consumable con) async {
+    final index = items.indexWhere((item) => item.uid == con.uid);
+
+    String buildRotationJSON(List<Member> list) {
+      StringBuffer sb = StringBuffer();
+      for (int i = 0; i < list.length; i++) {
+        sb.write('''
+        {
+          "uid": "${list[i].uid}"
+        }
+        ''');
+        if (i + 1 < list.length) {
+          sb.write(",");
+        }
+      }
+
+      return sb.toString();
+    }
+
+    if (index >= 0) {
+      try {
+        final body = '''
+        {
+          "uid": "${con.uid}",
+          "name": "${con.name}",
+          "rotationList": [
+            ${buildRotationJSON(con.rotationList)}
+          ]
+         }
+        ''';
+        var response = await GraphHelper.postSecure(body, "consumableSet");
+        if (response == con.uid) {
+          items[items.indexWhere((item) => item.uid == con.uid)] = con;
+          notifyListeners();
+        }
+      } catch (err) {
+        throw (err);
+      }
+    } else {
+      throw ("UID not found");
+    }
+  }
+
   Future<void> switchStatus(String conID) async {
     final body = '''{
         "uid": "$conID"

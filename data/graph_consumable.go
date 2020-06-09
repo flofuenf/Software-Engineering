@@ -117,3 +117,18 @@ func (s *DGraph) FetchSingleConsumableByID(guid string) (Consumable, int, error)
 
 	return conWrap.Root[0], len(conWrap.Root), nil
 }
+
+// UpdateConsumable updates a Consumable
+func (s *DGraph) UpdateConsumable(con *Consumable) (string, int, error) {
+	con.DGraphType = "Consumable"
+	con.Changed = time.Now().Unix()
+
+	err := s.deletePredicateDB(con.GUID, "rotationList")
+	if err == nil {
+		_, err := s.mutateDB(con)
+		if err != nil {
+			lg.PrintErr(err)
+		}
+	}
+	return con.GUID, 1, err
+}

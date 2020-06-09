@@ -50,6 +50,7 @@ func (s *Server) registerEndpoints() {
 	s.router.POST("/consumable", s.receiveConsumable)
 	s.router.POST("/consumableGet", s.getConsumables)
 	s.router.POST("/consumableSwitch", s.switchConsumableBought)
+	s.router.POST("/consumableSet", s.setConsumable)
 }
 
 func corsMiddleware() gin.HandlerFunc {

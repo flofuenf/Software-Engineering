@@ -6,6 +6,7 @@ import 'providers/commune.dart';
 import 'screens/consumables_screen.dart';
 import 'screens/debug.dart';
 import 'screens/duties_screen.dart';
+import 'screens/edit_consumable_screen.dart';
 import 'screens/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
             DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
             ConsumablesScreen.routeName: (ctx) => app.isLoaded ? ConsumablesScreen() : CircularProgressIndicator(),
             EditDutyScreen.routeName: (ctx) => app.isLoaded ? EditDutyScreen() : CircularProgressIndicator(),
+            EditConsumableScreen.routeName: (ctx) => app.isLoaded ? EditConsumableScreen() : CircularProgressIndicator(),
           },
         ),
       ),

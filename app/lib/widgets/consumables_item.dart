@@ -100,7 +100,7 @@ class _ConsumablesItemState extends State<ConsumablesItem> {
                         padding: EdgeInsets.all(0),
                         iconSize: 20,
                         onPressed: () {
-                          //Navigator.of(context).pushNamed('/dutyedit', arguments: widget.duty);
+                          Navigator.of(context).pushNamed('/consumableEdit', arguments: widget.consumable);
                         }),
                     IconButton(
                         icon: widget.consumable.isNeeded ? Icon(Icons.hourglass_full) : Icon(Icons.new_releases),

@@ -55,7 +55,7 @@ class _ConsumablesScreenState extends State<ConsumablesScreen> {
             IconButton(
                 icon: Icon(Icons.add_circle),
                 onPressed: () {
-                  //Navigator.of(context).pushNamed('/dutyedit');
+                  Navigator.of(context).pushNamed('/consumableEdit');
                 }),
           ],
         ),

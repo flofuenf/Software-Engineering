@@ -50,3 +50,18 @@ func (s *Server) switchConsumableBought(c *gin.Context) {
 
 	lib.Jsonify(c, con, count, err)
 }
+
+func (s *Server) setConsumable(c *gin.Context) {
+	var con data.Consumable
+	err := c.BindJSON(&con)
+	if err != nil {
+		lg.PrintErr(err)
+	}
+
+	guid, count, err := s.graph.UpdateConsumable(&con)
+	if err != nil {
+		guid = ""
+	}
+
+	lib.Jsonify(c, guid, count, err)
+}
