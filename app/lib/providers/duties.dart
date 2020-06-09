@@ -46,7 +46,6 @@ class Duties with ChangeNotifier {
           rotationIndex: data['rotationIndex'],
         );
       }
-      print(items[indexById(data['uid'])].nextDone);
       notifyListeners();
     } catch (err) {
       throw (err);

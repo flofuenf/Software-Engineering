@@ -11,7 +11,7 @@ class Duty {
   DateTime nextDone;
   final int rotationTime;
   final int rotationIndex;
-  final List<Member> rotationList;
+  List<Member> rotationList;
 
   Duty({
     this.uid,

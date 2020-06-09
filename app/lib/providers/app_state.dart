@@ -24,11 +24,11 @@ class AppState with ChangeNotifier {
     return (user != null && commune != null);
   }
 
-  String get comID{
+  String get comID {
     return commune.uid;
   }
 
-  List<Member> get members{
+  List<Member> get members {
     return this.commune.members;
   }
 
@@ -66,6 +66,20 @@ class AppState with ChangeNotifier {
     final body = '''{
         "uid": "$comID"
       }''';
+
+    List<Member> getMembers(List<dynamic> list) {
+      List<Member> members = [];
+      list.forEach((mem) {
+        members.add(Member(
+          uid: mem['uid'],
+          name: mem['name'],
+          created: DateTime.fromMillisecondsSinceEpoch(mem['created'] * 1000),
+          birth: DateTime.fromMillisecondsSinceEpoch(mem['birth'] * 1000),
+        ));
+      });
+      return members;
+    }
+
     try {
       var data = await GraphHelper.postSecure(body, "communeGet");
       commune = Commune(
@@ -78,6 +92,7 @@ class AppState with ChangeNotifier {
           city: data['address']['city'],
           zip: data['address']['zip'],
         ),
+        members: getMembers(data['members']),
       );
       notifyListeners();
     } catch (err) {
@@ -97,7 +112,7 @@ class AppState with ChangeNotifier {
       user = User(
         uid: data['uid'],
         name: data['name'],
-        birth: DateTime.fromMillisecondsSinceEpoch(data['birth']),
+        birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
       );
       notifyListeners();
     } catch (err) {

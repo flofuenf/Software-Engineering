@@ -97,14 +97,11 @@ class GraphHelper {
     try {
       final request = new http.Request("GET", Uri.parse(url));
       request.body = body;
-      print(request.body);
       request.headers['Content-Type'] = 'application/json';
 //      request.headers['Authorization'] = token;
       final response = await http.Client().send(request);
       String responseData = await response.stream.bytesToString();
-      print(responseData);
       if (jsonDecode(responseData)['success'] == true) {
-        print("true");
         return jsonDecode(responseData)['result'];
       }
       throw (jsonDecode(responseData)['error']);

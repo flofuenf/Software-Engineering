@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
             CommuneOverview.routeName: (ctx) => CommuneOverview(),
             DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
             ConsumablesScreen.routeName: (ctx) => ConsumablesScreen(),
-            EditDutyScreen.routeName: (ctx) => EditDutyScreen(),
+            EditDutyScreen.routeName: (ctx) => app.isLoaded ? EditDutyScreen() : CircularProgressIndicator(),
           },
         ),
       ),

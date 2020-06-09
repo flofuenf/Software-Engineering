@@ -2,8 +2,8 @@ import 'package:CommuneIsm/models/duty.dart';
 import 'package:CommuneIsm/models/member.dart';
 import 'package:CommuneIsm/models/rotation.dart';
 import 'package:CommuneIsm/providers/app_state.dart';
-import 'package:CommuneIsm/providers/commune.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EditDutyScreen extends StatefulWidget {
@@ -39,8 +39,12 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
     return items;
   }
 
-  bool checkOnMember(Member member){
-    if(duty.rotationList.contains(member)){
+  bool checkOnMember(Member member) {
+    if (duty.rotationList == null) {
+      duty.rotationList = [];
+      return false;
+    }
+    if (duty.rotationList.any((element) => element.uid == member.uid)) {
       return true;
     }
     return false;
@@ -48,7 +52,6 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
 
   @override
   void didChangeDependencies() {
-    print("dep");
     if (_isInit) {
       _rotationList = buildRotationDropdown();
       this.duty = ModalRoute.of(context).settings.arguments as Duty;
@@ -68,9 +71,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    print(members[0].name);
+    final f = new DateFormat('dd.MM.yyyy');
 
     changeRotation(Rotation selectedRotation) {
       setState(() {
@@ -88,91 +89,92 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: _form,
-        child: ListView(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                    initialValue: duty.name,
-                    decoration: InputDecoration(
-                      labelText: "Name",
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          key: _form,
+          child: ListView(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Flexible(
+                    child: TextFormField(
+                      initialValue: duty.name,
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                    initialValue: duty.description,
-                    decoration: InputDecoration(
-                      labelText: "Beschreibung",
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Flexible(
+                    child: TextFormField(
+                      initialValue: duty.description,
+                      decoration: InputDecoration(
+                        labelText: "Beschreibung",
+                      ),
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
                     ),
-                    maxLines: 3,
-                    keyboardType: TextInputType.multiline,
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(duty.nextDone == null
-                        ? 'Pick a date'
-                        : duty.nextDone.toString()),
-                    RaisedButton(
-                      child: duty.nextDone == null
-                          ? Text("Pick a date")
-                          : Text(duty.nextDone.toString()),
-                      onPressed: () {
-                        showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate:
-                              DateTime.now().subtract(Duration(days: 10)),
-                          lastDate: DateTime.now().add(Duration(days: 30)),
-                        ).then((date) {
-                          setState(() {
-                            duty.nextDone = date;
-                            print("state");
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Text(duty.nextDone == null
+                          ? 'Start-Datum wählen'
+                          : f.format(duty.nextDone)),
+                      RaisedButton(
+                        child: Text("Pick a date"),
+                        onPressed: () {
+                          showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate:
+                                DateTime.now().subtract(Duration(days: 10)),
+                            lastDate: DateTime.now().add(Duration(days: 30)),
+                          ).then((date) {
+                            setState(() {
+                              duty.nextDone = date;
+                            });
                           });
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Flexible(
-                  child: DropdownButton(
-                    value: _selectedRotation,
-                    items: _rotationList,
-                    onChanged: changeRotation,
+                        },
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-//                Flexible(
-//                  child: ListView(
-//                    children: members
-//                        .map((e) => CheckboxListTile(
-//                              title: Text(e.name),
-//                              value: checkOnMember(e),
-//                              onChanged: (bool val) {
-//                                print(val);
-//                              },
-//                            ))
-//                        .toList(),
-//                  ),
-//                ),
-              ],
-            ),
-          ],
+                  Flexible(
+                    child: DropdownButton(
+                      value: _selectedRotation,
+                      items: _rotationList,
+                      onChanged: changeRotation,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: members
+                    .map((e) => CheckboxListTile(
+                          title: Text(e.name),
+                          value: checkOnMember(e),
+                          onChanged: (bool val) {
+                            setState(() {
+                              if (val) {
+                                duty.rotationList.add(e);
+                              } else {
+                                duty.rotationList.remove(e);
+                              }
+                            });
+                          },
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

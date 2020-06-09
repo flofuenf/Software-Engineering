@@ -40,6 +40,12 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
             				city
             				zip
           				}
+						members{
+							uid
+							name
+							birth
+							created
+						}
         			}
 				}`
 
