@@ -52,6 +52,10 @@ func (s *DGraph) FetchConsumablesByID(guid string) (interface{}, int, error) {
 		return nil, 0, errors.WithStack(err)
 	}
 
+	if len(comWrap.Root) < 1 {
+		return nil, 0, nil
+	}
+
 	return comWrap.Root[0].Consumables, len(comWrap.Root[0].Consumables), nil
 }
 

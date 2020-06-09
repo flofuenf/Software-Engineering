@@ -1,8 +1,9 @@
+import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
 
 import 'providers/commune.dart';
-import 'screens/consumables.dart';
+import 'screens/consumables_screen.dart';
 import 'screens/debug.dart';
 import 'screens/duties_screen.dart';
 import 'screens/overview.dart';
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Commune(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Consumables(),
         ),
       ],
       child: Consumer<AppState>(
@@ -56,7 +60,7 @@ class MyApp extends StatelessWidget {
             DebugScreen.routeName: (ctx) => DebugScreen(),
             CommuneOverview.routeName: (ctx) => CommuneOverview(),
             DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
-            ConsumablesScreen.routeName: (ctx) => ConsumablesScreen(),
+            ConsumablesScreen.routeName: (ctx) => app.isLoaded ? ConsumablesScreen() : CircularProgressIndicator(),
             EditDutyScreen.routeName: (ctx) => app.isLoaded ? EditDutyScreen() : CircularProgressIndicator(),
           },
         ),
