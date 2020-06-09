@@ -1,12 +1,8 @@
 import 'package:CommuneIsm/models/consumable.dart';
-import 'package:CommuneIsm/models/duty.dart';
 import 'package:CommuneIsm/models/member.dart';
-import 'package:CommuneIsm/models/rotation.dart';
 import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:CommuneIsm/providers/consumables.dart';
-import 'package:CommuneIsm/providers/duties.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EditConsumableScreen extends StatefulWidget {
@@ -24,7 +20,6 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
   Consumable consumable;
   final _form = GlobalKey<FormState>();
   List<Member> members = [];
-  List<DropdownMenuItem<Rotation>> _rotationList = [];
 
   @override
   void initState() {

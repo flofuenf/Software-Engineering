@@ -7,7 +7,7 @@ import 'screens/consumables_screen.dart';
 import 'screens/debug.dart';
 import 'screens/duties_screen.dart';
 import 'screens/edit_consumable_screen.dart';
-import 'screens/overview.dart';
+import 'screens/commune_overview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/app_state.dart';
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
                             )),
           routes: {
             DebugScreen.routeName: (ctx) => DebugScreen(),
-            CommuneOverview.routeName: (ctx) => CommuneOverview(),
+            CommuneOverview.routeName: (ctx) => app.isLoaded ? CommuneOverview() : CircularProgressIndicator(),
             DutyScreen.routeName: (ctx) => app.isLoaded ? DutyScreen() : CircularProgressIndicator(),
             ConsumablesScreen.routeName: (ctx) => app.isLoaded ? ConsumablesScreen() : CircularProgressIndicator(),
             EditDutyScreen.routeName: (ctx) => app.isLoaded ? EditDutyScreen() : CircularProgressIndicator(),

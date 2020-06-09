@@ -1,3 +1,4 @@
+import 'package:CommuneIsm/models/consumable.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/address.dart';
@@ -13,6 +14,7 @@ class Commune with ChangeNotifier{
   Address address;
   List<Member> members;
   List<Duty> duties;
+  List<Consumable> consumables;
 
   Commune({
     this.uid,
@@ -22,6 +24,7 @@ class Commune with ChangeNotifier{
     this.address,
     this.members,
     this.duties,
+    this.consumables,
   });
 
   List<Member> get member{
