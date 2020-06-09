@@ -166,7 +166,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
                               if (val) {
                                 duty.rotationList.add(e);
                               } else {
-                                duty.rotationList.remove(e);
+                                duty.rotationList.removeWhere((item) => item.uid == e.uid);
                               }
                             });
                           },
