@@ -19,6 +19,31 @@ class Duties with ChangeNotifier {
     return items.indexWhere((duty) => duty.uid == uid);
   }
 
+  Future<void> deleteDuty(String dutyID, String comID) async{
+    final body = '''{
+        "uid": "$comID",
+        "duties": [
+          {
+            "uid": "$dutyID"
+          }
+         ]
+      }''';
+
+    print(body);
+    try {
+      var response = await GraphHelper.postSecure(body, "dutyDelete");
+      if (response != ""){
+        items.removeAt(indexById(dutyID));
+        notifyListeners();
+      }
+      else{
+        throw("Delete failed :(");
+      }
+    }catch(err){
+      throw(err);
+    }
+  }
+
   Future<void> setDone(String dutyID) async {
     final body = '''{
         "uid": "$dutyID"
@@ -141,7 +166,7 @@ class Duties with ChangeNotifier {
       if (response != "") {
         duty.uid = response;
         items.add(duty);
-        notifyListeners();
+        fetchDuties(comID);
       } else {
         throw ("Something went wrong (Creating Duty)");
       }

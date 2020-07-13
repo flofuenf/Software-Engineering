@@ -68,3 +68,17 @@ func (s *Server) setDuty(c *gin.Context) {
 
 	lib.Jsonify(c, guid, count, err)
 }
+
+func (s *Server) deleteDuty(c *gin.Context) {
+	var com data.Commune
+	err := c.BindJSON(&com)
+	if err != nil {
+		lg.PrintErr(err)
+	}
+
+	err = s.graph.DeleteDuty(&com)
+	if err != nil {
+		com.Duties[0].GUID = ""
+	}
+	lib.Jsonify(c, com.Duties[0].GUID, 1, err)
+}

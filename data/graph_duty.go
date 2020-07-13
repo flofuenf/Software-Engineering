@@ -21,6 +21,16 @@ func (s *DGraph) InsertDuty(duty *Duty) error {
 	return err
 }
 
+// DeleteDuty deletes one Duty by GUID
+func (s *DGraph) DeleteDuty(com *Commune) error {
+	err := s.deletePredicateDB(com.Duties[0].GUID, "rotationList")
+	err = s.deleteObjectDB(com.GUID, "duties", com.Duties[0].GUID)
+	if err == nil {
+		err = s.deleteEdgeDB(com.Duties[0].GUID)
+	}
+	return errors.WithStack(err)
+}
+
 // UpdateDuty updates a Duty
 func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 	duty.DGraphType = "Duty"

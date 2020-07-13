@@ -1,4 +1,5 @@
 import 'package:CommuneIsm/models/duty.dart';
+import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,20 +24,29 @@ class _DutiesItemState extends State<DutiesItem> {
     }
   }
 
-  String buildNameOrder(){
+  void _deleteDuty() async{
+    try{
+      String comID = Provider.of<AppState>(context, listen: false).commune.uid;
+      await Provider.of<Duties>(context, listen: false).deleteDuty(widget.duty.uid, comID);
+    }catch(err){
+      print(err);
+    }
+  }
+
+  String buildNameOrder() {
     StringBuffer sb = StringBuffer();
     sb.write("Reihenfolge: ");
     int index = widget.duty.rotationIndex;
-    for(int i=index+1; i< widget.duty.rotationList.length; i++){
+    for (int i = index + 1; i < widget.duty.rotationList.length; i++) {
       sb.write(widget.duty.rotationList[i].name);
-      if( i > index +1){
+      if (i > index + 1) {
         sb.write(" --> ");
       }
     }
 
-    for(int i=0; i < index; i++){
+    for (int i = 0; i < index; i++) {
       sb.write(widget.duty.rotationList[i].name);
-      if(i < index-1){
+      if (i < index - 1) {
         sb.write(" --> ");
       }
     }
@@ -63,7 +73,8 @@ class _DutiesItemState extends State<DutiesItem> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(widget.duty.rotationList[widget.duty.rotationIndex].name),
+                      Text(widget
+                          .duty.rotationList[widget.duty.rotationIndex].name),
                       Text("In 3 Tagen"),
                     ],
                   ),
@@ -78,8 +89,9 @@ class _DutiesItemState extends State<DutiesItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(widget.duty.name),
-                        Text(
-                            "Zuletzt erledigt am ${f.format(widget.duty.lastDone)} von Flo"),
+                        Text(widget.duty.lastDone.millisecondsSinceEpoch > 0
+                            ? "Zuletzt erledigt am ${f.format(widget.duty.lastDone)} von Flo"
+                            : "Nie"),
                       ],
                     ),
                     Text(widget.duty.description),
@@ -96,13 +108,50 @@ class _DutiesItemState extends State<DutiesItem> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        padding: EdgeInsets.all(0),
-                        iconSize: 20,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/dutyedit', arguments: widget.duty);
-                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.edit),
+                            padding: EdgeInsets.all(0),
+                            iconSize: 20,
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/dutyedit',
+                                  arguments: widget.duty);
+                            }),
+                        IconButton(
+                            icon: Icon(Icons.delete),
+                            padding: EdgeInsets.all(0),
+                            iconSize: 20,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context){
+                                  return AlertDialog(
+                                    title: new Text("Putzdienst löschen"),
+                                    content:
+                                    new Text("Bist du dir sicher, dass du diesen Dienst löschen möchtest?"),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("Sicher"),
+                                        onPressed: () {
+                                          _deleteDuty();
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      new FlatButton(
+                                        child: new Text("Lieber nicht..."),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+                              );
+                            }),
+                      ],
+                    ),
                     IconButton(
                         icon: Icon(Icons.check),
                         padding: EdgeInsets.all(0),

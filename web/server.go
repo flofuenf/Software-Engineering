@@ -46,6 +46,7 @@ func (s *Server) registerEndpoints() {
 	s.router.POST("/dutyGet", s.getDuties)
 	s.router.POST("/dutySet", s.setDuty)
 	s.router.POST("/dutyDone", s.setDutyDone)
+	s.router.POST("/dutyDelete", s.deleteDuty)
 
 	s.router.POST("/consumable", s.receiveConsumable)
 	s.router.POST("/consumableGet", s.getConsumables)
