@@ -2,7 +2,7 @@
 import 'member.dart';
 
 class Duty {
-  final String uid;
+  String uid;
   final DateTime created;
   final DateTime changed;
   String name;

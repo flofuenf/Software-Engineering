@@ -20,6 +20,9 @@ func (s *Server) receiveDuty(c *gin.Context) {
 	}
 
 	err = s.graph.AddDutyByID(com.GUID, com.Duties[0].GUID)
+	if err != nil {
+		lib.Jsonify(c, "", 0, err)
+	}
 
 	lib.Jsonify(c, com.Duties[0].GUID, 1, err)
 }

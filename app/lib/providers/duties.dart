@@ -55,6 +55,7 @@ class Duties with ChangeNotifier {
   }
 
   Future<void> updateDuty(Duty duty) async {
+    print("update");
     final index = items.indexWhere((item) => item.uid == duty.uid);
 
     String buildRotationJSON(List<Member> list) {
@@ -100,6 +101,55 @@ class Duties with ChangeNotifier {
     }
   }
 
+  Future<void> createDuty(Duty duty, String comID) async {
+    print("create");
+
+    String buildRotationJSON(List<Member> list) {
+      StringBuffer sb = StringBuffer();
+      for (int i = 0; i < list.length; i++) {
+        sb.write('''
+        {
+          "uid": "${list[i].uid}"
+        }
+        ''');
+        if (i + 1 < list.length) {
+          sb.write(",");
+        }
+      }
+
+      return sb.toString();
+    }
+
+    try {
+      final body = '''
+        {
+          "uid": "$comID",
+          "duties": [
+            {
+              "name": "${duty.name}",
+              "description": "${duty.description}",
+              "rotationTime": ${duty.rotationTime},
+              "nextDone": ${duty.nextDone.millisecondsSinceEpoch / 1000},
+              "rotationList": [
+                ${buildRotationJSON(duty.rotationList)}
+              ]
+            }
+          ]
+         }
+        ''';
+      var response = await GraphHelper.postSecure(body, "duty");
+      if (response != "") {
+        duty.uid = response;
+        items.add(duty);
+        notifyListeners();
+      } else {
+        throw ("Something went wrong (Creating Duty)");
+      }
+    } catch (err) {
+      throw (err);
+    }
+  }
+
   Future<void> fetchDuties(String comID) async {
     final body = '''{
         "uid": "$comID"
@@ -124,8 +174,9 @@ class Duties with ChangeNotifier {
                 DateTime.fromMillisecondsSinceEpoch(duty['created'] * 1000),
             changed:
                 DateTime.fromMillisecondsSinceEpoch(duty['changed'] * 1000),
-            lastDone:
-                DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000),
+            lastDone: duty['lastDone'] != null
+                ? DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000)
+                : DateTime.fromMillisecondsSinceEpoch(0),
             nextDone:
                 DateTime.fromMillisecondsSinceEpoch(duty['nextDone'] * 1000),
             rotationList: rotMember,

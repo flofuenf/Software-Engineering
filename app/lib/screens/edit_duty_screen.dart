@@ -23,6 +23,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
   bool _isInit = true;
   bool _isLoading = false;
   Duty duty;
+  bool update = true;
   final _form = GlobalKey<FormState>();
   List<Member> members = [];
   List<DropdownMenuItem<Rotation>> _rotationList = [];
@@ -83,6 +84,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       this.duty = ModalRoute.of(context).settings.arguments as Duty;
       this.members = Provider.of<AppState>(context, listen: false).members;
       if (duty == null) {
+        update = false;
         duty = Duty();
         _selectedRotation = _rotationList[0].value;
       } else {
@@ -104,11 +106,6 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       return;
     }
 
-    if(duty.nextDone == null){
-      await showPopUp("Error", "Bitte wähle ein Datum aus...");
-      return;
-    }
-
     if(duty.rotationList.length < 1){
       await showPopUp("Error", "Bitte wähle mindestens ein WG-Mitglied aus");
       return;
@@ -119,18 +116,31 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
     duty.description = _descriptionController.text;
     duty.nextDone = _selectedDate;
 
+    if(duty.nextDone == null){
+      await showPopUp("Error", "Bitte wähle ein Datum aus...");
+      return;
+    }
+
     _form.currentState.save();
     setState(() {
       _isLoading = true;
     });
 
+    if(update){
+      try{
+        await Provider.of<Duties>(context, listen: false).updateDuty(duty);
+      }catch(err){
+        throw(err);
+      }
+      return;
+    }
+
     try{
-      await Provider.of<Duties>(context, listen: false).updateDuty(duty);
+      String comID = Provider.of<AppState>(context, listen: false).commune.uid;
+      await Provider.of<Duties>(context, listen: false).createDuty(duty, comID);
     }catch(err){
       throw(err);
     }
-
-    print("saved");
   }
 
   @override

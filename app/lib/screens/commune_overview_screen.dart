@@ -1,4 +1,3 @@
-import 'package:CommuneIsm/models/member.dart';
 import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:CommuneIsm/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +5,6 @@ import 'package:provider/provider.dart';
 
 class CommuneOverview extends StatelessWidget {
   static const routeName = "/overview";
-
-  List<Widget> _buildMemberList(List<Member> list) {}
 
   @override
   Widget build(BuildContext context) {
