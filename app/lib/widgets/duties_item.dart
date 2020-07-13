@@ -33,6 +33,14 @@ class _DutiesItemState extends State<DutiesItem> {
     }
   }
 
+  int _getDueInDays() {
+    DateTime now = DateTime.now();
+    DateTime todayMidnight = DateTime.utc(now.year, now.month, now.day);
+    DateTime nextDoneMidnight = DateTime.utc(widget.duty.nextDone.year, widget.duty.nextDone.month, widget.duty.nextDone.day);
+    Duration dur = nextDoneMidnight.difference(todayMidnight);
+    return dur.inDays;
+  }
+
   String buildNameOrder() {
     StringBuffer sb = StringBuffer();
     sb.write("Reihenfolge: ");
@@ -56,6 +64,7 @@ class _DutiesItemState extends State<DutiesItem> {
 
   @override
   Widget build(BuildContext context) {
+    final due = _getDueInDays();
     final f = new DateFormat('dd.MM.yyyy');
     return Card(
       elevation: 2,
@@ -75,7 +84,7 @@ class _DutiesItemState extends State<DutiesItem> {
                     children: <Widget>[
                       Text(widget
                           .duty.rotationList[widget.duty.rotationIndex].name),
-                      Text("In 3 Tagen"),
+                      Text(due == 0 ? "Heute!" : due < 1 ? "Seit ${due*-1} Tagen" : "In $due Tagen"),
                     ],
                   ),
                 ),

@@ -132,15 +132,15 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       }catch(err){
         throw(err);
       }
-      return;
+    }else{
+      try{
+        String comID = Provider.of<AppState>(context, listen: false).commune.uid;
+        await Provider.of<Duties>(context, listen: false).createDuty(duty, comID);
+      }catch(err){
+        throw(err);
+      }
     }
-
-    try{
-      String comID = Provider.of<AppState>(context, listen: false).commune.uid;
-      await Provider.of<Duties>(context, listen: false).createDuty(duty, comID);
-    }catch(err){
-      throw(err);
-    }
+    Navigator.of(context).pop();
   }
 
   @override
