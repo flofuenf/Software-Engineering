@@ -35,11 +35,13 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) registerEndpoints() {
+	s.router.POST("/register", s.newUser)
+	s.router.POST("/login", s.login)
 	s.router.POST("/communeGet", s.getCommune)
 	s.router.POST("/commune", s.receiveCommune)
 	s.router.POST("/joinCommune", s.joinCommune)
 
-	s.router.POST("/user", s.receiveUser)
+	// s.router.POST("/user", s.receiveUser)
 	s.router.POST("/userGet", s.getUser)
 
 	s.router.POST("/duty", s.receiveDuty)

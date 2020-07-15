@@ -2,28 +2,27 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-const address = "http://localhost:8000";
+const address = "http://192.168.25.101:8000";
 
 class GraphHelper {
-  //this will be moved because of O-Auth
-//  static Future<Map<dynamic, dynamic>> authPost(String body) async {
-//    final url = "$address/auth";
-//    try {
-//      final request = new http.Request("POST", Uri.parse(url));
-//      request.body = body;
-//      request.headers['Content-Type'] = 'application/json';
-//      final response = await http.Client().send(request);
-//      String responseData = await response.stream.bytesToString();
-//      if (jsonDecode(responseData)['success'] == true) {
-//        return jsonDecode(responseData)['data'];
-//      }
-//      throw (jsonDecode(responseData)['error']);
-//    } on http.ClientException {
-//      throw ("Please check your internet connection!");
-//    } catch (err) {
-//      throw (err);
-//    }
-//  }
+  static Future<Map<dynamic, dynamic>> authPost(String body) async {
+    final url = "$address/auth";
+    try {
+      final request = new http.Request("POST", Uri.parse(url));
+      request.body = body;
+      request.headers['Content-Type'] = 'application/json';
+      final response = await http.Client().send(request);
+      String responseData = await response.stream.bytesToString();
+      if (jsonDecode(responseData)['success'] == true) {
+        return jsonDecode(responseData)['data'];
+      }
+      throw (jsonDecode(responseData)['error']);
+    } on http.ClientException {
+      throw ("Please check your internet connection!");
+    } catch (err) {
+      throw (err);
+    }
+  }
 //
 //  //returns a Map
 //  static Future<Map<dynamic, dynamic>> getSecureWithBody(

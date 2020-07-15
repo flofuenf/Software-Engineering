@@ -54,7 +54,7 @@ class _ConsumablesItemState extends State<ConsumablesItem> {
           Column(
             children: <Widget>[
               Container(
-                color: widget.consumable.isNeeded ? Colors.green : Colors.deepOrange,
+                color: widget.consumable.isNeeded ? Colors.deepOrange : Colors.green,
                 width: double.infinity,
                 height: 40,
                 child: Padding(
@@ -64,7 +64,7 @@ class _ConsumablesItemState extends State<ConsumablesItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(widget.consumable.rotationList[widget.consumable.rotationIndex].name),
-                      Text("Kaufen"),
+                      Text(widget.consumable.isNeeded ? "Kaufen" : ""),
                     ],
                   ),
                 ),

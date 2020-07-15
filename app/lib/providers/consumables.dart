@@ -18,7 +18,7 @@ class Consumables with ChangeNotifier {
     return items.indexWhere((duty) => duty.uid == uid);
   }
 
-  Future<void> updateConsumable(Consumable con) async {
+  Future<void> updateConsumable(Consumable con, String comID) async {
     final index = items.indexWhere((item) => item.uid == con.uid);
 
     String buildRotationJSON(List<Member> list) {
@@ -43,15 +43,18 @@ class Consumables with ChangeNotifier {
         {
           "uid": "${con.uid}",
           "name": "${con.name}",
+          "isNeeded": ${con.isNeeded},
           "rotationList": [
             ${buildRotationJSON(con.rotationList)}
           ]
          }
         ''';
         var response = await GraphHelper.postSecure(body, "consumableSet");
+        print(response);
+        print(con.uid);
         if (response == con.uid) {
           items[items.indexWhere((item) => item.uid == con.uid)] = con;
-          notifyListeners();
+          fetchConsumables(comID);
         }
       } catch (err) {
         throw (err);

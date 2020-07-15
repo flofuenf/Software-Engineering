@@ -1,6 +1,8 @@
 import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:CommuneIsm/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CommuneOverview extends StatelessWidget {
@@ -88,6 +90,82 @@ class CommuneOverview extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Container(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Einladungslink"),
+                                content: Text(
+                                    "Lade deine Freunde in die WG ein!"),
+                                actions: <Widget>[
+                                  IconButton(
+                                    icon: FaIcon(FontAwesomeIcons.whatsapp),
+                                    onPressed: () {
+                                      FlutterShareMe()
+                                          .shareToWhatsApp(msg: "Hallo das ist ein Test");
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.content_copy),
+                                    onPressed: () {
+                                      //Zwischenablage
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text("Einladungslink versenden"),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Container(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: new Text("Austritt aus WG"),
+                                content: new Text(
+                                    "Bist du dir sicher, dass du aus dieser WG austreten möchtest?"),
+                                actions: <Widget>[
+                                  new FlatButton(
+                                    child: new Text("Sicher"),
+                                    onPressed: () {
+                                      print("austreten!!");
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text("Lieber nicht..."),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text("Aus WG austreten"),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

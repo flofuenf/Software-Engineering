@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:CommuneIsm/models/member.dart';
+import 'package:CommuneIsm/providers/auth.dart';
 
 import '../models/address.dart';
 
@@ -14,10 +15,12 @@ import 'user.dart';
 class AppState with ChangeNotifier {
   User user;
   Commune commune;
+  Auth auth;
 
   AppState({
     this.user,
     this.commune,
+    this.auth,
   });
 
   bool get isLoaded {
@@ -32,14 +35,36 @@ class AppState with ChangeNotifier {
     return this.commune.members;
   }
 
+  Future<void> login(Map<String, String> input) async {
+    auth = Auth();
+    final body = '''{
+      "mail": \"${input['mail']}\",
+      "pw": \"${input['pw']}\"
+    }''';
+
+    try {
+      final res = await GraphHelper.authPost(body);
+
+      auth.token = "${res['token_type']} ${res['access_token']}";
+      auth.expiryDate = DateTime.parse(res['expiry']);
+      user.uid = res['userID'];
+
+      if (auth.token != null && auth.expiryDate.isAfter(DateTime.now())) {
+        initApp();
+      }
+    } catch (err) {
+      throw (err);
+    }
+  }
+
   Future<void> initApp() async {
-    const comID = '0x20';
-    const userID = '0x22';
+//    const comID = '0x20';
+//    const userID = '0x22';
     try {
       final prefs = await SharedPreferences.getInstance();
       final userData = json.encode({
         'comID': comID,
-        'userID': userID,
+        'userID': user.uid,
       });
       prefs.setString('userData', userData);
       return;

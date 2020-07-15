@@ -1,6 +1,8 @@
 import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
+import 'package:CommuneIsm/screens/login/login_screen.dart';
+import 'package:CommuneIsm/screens/login/welcome_screen.dart';
 
 import 'providers/commune.dart';
 import 'screens/consumables_screen.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/app_state.dart';
 import 'screens/dashboard.dart';
+import 'screens/login/register_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -54,9 +57,7 @@ class MyApp extends StatelessWidget {
                           ? Center(
                               child: CircularProgressIndicator(),
                             )
-                          : Center(
-                              child: CircularProgressIndicator(),
-                            )),
+                          : WelcomeScreen()),
           routes: {
             DebugScreen.routeName: (ctx) => DebugScreen(),
             CommuneOverview.routeName: (ctx) => app.isLoaded ? CommuneOverview() : CircularProgressIndicator(),
@@ -64,6 +65,8 @@ class MyApp extends StatelessWidget {
             ConsumablesScreen.routeName: (ctx) => app.isLoaded ? ConsumablesScreen() : CircularProgressIndicator(),
             EditDutyScreen.routeName: (ctx) => app.isLoaded ? EditDutyScreen() : CircularProgressIndicator(),
             EditConsumableScreen.routeName: (ctx) => app.isLoaded ? EditConsumableScreen() : CircularProgressIndicator(),
+            LoginScreen.routeName: (ctx) => app.isLoaded ? Dashboard() : LoginScreen(),
+            RegisterScreen.routeName: (ctx) => app.isLoaded ? Dashboard() : RegisterScreen(),
           },
         ),
       ),

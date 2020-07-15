@@ -89,10 +89,12 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
 
     try {
       await Provider.of<Consumables>(context, listen: false)
-          .updateConsumable(consumable);
+          .updateConsumable(consumable, Provider.of<AppState>(context).commune.uid);
     } catch (err) {
       throw (err);
     }
+
+    Navigator.of(context).pop();
   }
 
   @override

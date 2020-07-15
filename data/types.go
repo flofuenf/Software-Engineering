@@ -37,6 +37,17 @@ type User struct {
 	Birth      int64  `json:"birth,omitempty"`
 }
 
+type Auth struct {
+	GUID         string `json:"uid"`
+	Mail         string `json:"mail"`
+	Pass         string `json:"pass"`
+	UserID       string `json:"userID"`
+	Name         string `json:"name"`
+	Birth        int64  `json:"birth"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 // UserWrapper describes a Commune Object
 type UserWrapper struct {
 	Root []User `json:"query"`
