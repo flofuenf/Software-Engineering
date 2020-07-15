@@ -17,6 +17,7 @@ type Server struct {
 	graph   *data.DGraph
 	auth    *auth.Database
 	router  *gin.Engine
+	secure  *gin.RouterGroup
 	address string
 }
 
@@ -26,10 +27,14 @@ func SetupServer(graph *data.DGraph, auth *auth.Database, port int) *Server {
 		graph:   graph,
 		auth:    auth,
 		router:  gin.Default(),
+		secure:  nil,
 		address: ":" + strconv.Itoa(port),
 	}
 	server.router.Use(corsMiddleware())
+	server.secure = server.router.Group("api")
+	server.secure.Use(corsMiddleware()).Use(authMiddleware())
 	server.registerEndpoints()
+	server.registerSecureEndpoints()
 	return server
 }
 
@@ -42,23 +47,25 @@ func (s *Server) Run() error {
 func (s *Server) registerEndpoints() {
 	s.router.POST("/register", s.register)
 	s.router.POST("/login", s.login)
-	s.router.POST("/communeGet", s.getCommune)
-	s.router.POST("/commune", s.receiveCommune)
-	s.router.POST("/joinCommune", s.joinCommune)
+}
 
-	// s.router.POST("/user", s.receiveUser)
-	s.router.POST("/userGet", s.getUser)
+func (s *Server) registerSecureEndpoints() {
+	s.secure.POST("/communeGet", s.getCommune)
+	s.secure.POST("/commune", s.receiveCommune)
+	s.secure.POST("/joinCommune", s.joinCommune)
 
-	s.router.POST("/duty", s.receiveDuty)
-	s.router.POST("/dutyGet", s.getDuties)
-	s.router.POST("/dutySet", s.setDuty)
-	s.router.POST("/dutyDone", s.setDutyDone)
-	s.router.POST("/dutyDelete", s.deleteDuty)
+	s.secure.POST("/userGet", s.getUser)
 
-	s.router.POST("/consumable", s.receiveConsumable)
-	s.router.POST("/consumableGet", s.getConsumables)
-	s.router.POST("/consumableSwitch", s.switchConsumableBought)
-	s.router.POST("/consumableSet", s.setConsumable)
+	s.secure.POST("/duty", s.receiveDuty)
+	s.secure.POST("/dutyGet", s.getDuties)
+	s.secure.POST("/dutySet", s.setDuty)
+	s.secure.POST("/dutyDone", s.setDutyDone)
+	s.secure.POST("/dutyDelete", s.deleteDuty)
+
+	s.secure.POST("/consumable", s.receiveConsumable)
+	s.secure.POST("/consumableGet", s.getConsumables)
+	s.secure.POST("/consumableSwitch", s.switchConsumableBought)
+	s.secure.POST("/consumableSet", s.setConsumable)
 }
 
 func corsMiddleware() gin.HandlerFunc {
