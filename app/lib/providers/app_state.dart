@@ -36,28 +36,56 @@ class AppState with ChangeNotifier {
   }
 
   Future<void> login(Map<String, String> input) async {
+    print("login");
     auth = Auth();
     final body = '''{
       "mail": \"${input['mail']}\",
-      "pw": \"${input['pw']}\"
+      "pass": \"${input['pw']}\"
     }''';
 
     try {
       final res = await GraphHelper.authPost(body);
+      auth.accessToken = "Bearer ${res['access_token']}";
+      auth.refreshToken = res['refresh_token'];
+      auth.userID = "${res['user_id']}";
 
-      auth.token = "${res['token_type']} ${res['access_token']}";
-      auth.expiryDate = DateTime.parse(res['expiry']);
-      user.uid = res['userID'];
-
-      if (auth.token != null && auth.expiryDate.isAfter(DateTime.now())) {
+      if (auth.accessToken != null &&
+          auth.refreshToken != null &&
+          auth.userID != null) {
+        print("init App");
         initApp();
+        return;
       }
+      print("dont init app");
+//      if (auth.token != null && auth.expiryDate.isAfter(DateTime.now())) {
+//        initApp();
+//      }
+
     } catch (err) {
       throw (err);
     }
   }
 
   Future<void> initApp() async {
+    try{
+      print("before fetch User");
+      await fetchUser(auth.userID);
+      print(user.name);
+    }catch(err){
+      throw(err);
+    }
+
+    if(user.communeID == null){
+      //go to Commune Selection / Invitation
+      return;
+    }
+
+    try{
+      await fetchCommune(user.communeID);
+      print(comID);
+    }catch(err){
+      throw(err);
+    }
 //    const comID = '0x20';
 //    const userID = '0x22';
     try {
@@ -106,7 +134,7 @@ class AppState with ChangeNotifier {
     }
 
     try {
-      var data = await GraphHelper.postSecure(body, "communeGet");
+      var data = await GraphHelper.postSecure(body, "api/communeGet", auth.accessToken);
       commune = Commune(
         uid: data['uid'],
         name: data['name'],
@@ -127,17 +155,20 @@ class AppState with ChangeNotifier {
     }
   }
 
-  Future<void> fetchUser(String userUD) async {
+  Future<void> fetchUser(String userID) async {
     final body = '''{
-        "uid": "$userUD"
+        "uid": "$userID"
       }''';
 
     try {
-      var data = await GraphHelper.postSecure(body, "userGet");
+      print("before graph fetch");
+      var data = await GraphHelper.postSecure(body, "api/userGet", auth.accessToken);
+      print(data);
       user = User(
         uid: data['uid'],
         name: data['name'],
         birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
+        communeID: data['commune']
       );
       notifyListeners();
     } catch (err) {

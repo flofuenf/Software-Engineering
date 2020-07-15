@@ -31,7 +31,7 @@ class Duties with ChangeNotifier {
 
     print(body);
     try {
-      var response = await GraphHelper.postSecure(body, "dutyDelete");
+      var response = await GraphHelper.postSecure(body, "api/dutyDelete", "");
       if (response != ""){
         items.removeAt(indexById(dutyID));
         notifyListeners();
@@ -49,7 +49,7 @@ class Duties with ChangeNotifier {
         "uid": "$dutyID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "dutyDone");
+      var data = await GraphHelper.postSecure(body, "api/dutyDone", "");
       if (data != null) {
         final List<Member> rotMember = [];
         data['rotationList'].forEach((mem) {
@@ -113,7 +113,7 @@ class Duties with ChangeNotifier {
           ]
          }
         ''';
-        var response = await GraphHelper.postSecure(body, "dutySet");
+        var response = await GraphHelper.postSecure(body, "api/dutySet", "");
         if (response == duty.uid) {
           items[items.indexWhere((item) => item.uid == duty.uid)] = duty;
           notifyListeners();
@@ -162,7 +162,7 @@ class Duties with ChangeNotifier {
           ]
          }
         ''';
-      var response = await GraphHelper.postSecure(body, "duty");
+      var response = await GraphHelper.postSecure(body, "api/duty", "");
       if (response != "") {
         duty.uid = response;
         items.add(duty);
@@ -180,7 +180,7 @@ class Duties with ChangeNotifier {
         "uid": "$comID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "dutyGet");
+      var data = await GraphHelper.postSecure(body, "api/dutyGet", "");
       if (data != null) {
         final List<Duty> loadedDuties = [];
         data.forEach((duty) {

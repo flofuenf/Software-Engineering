@@ -35,6 +35,7 @@ type User struct {
 	Name       string `json:"name,omitempty"`
 	Created    int64  `json:"created,omitempty"`
 	Birth      int64  `json:"birth,omitempty"`
+	Commune    string `json:"commune"`
 }
 
 // Auth describes an Auth Object

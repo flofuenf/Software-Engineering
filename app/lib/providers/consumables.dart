@@ -49,7 +49,7 @@ class Consumables with ChangeNotifier {
           ]
          }
         ''';
-        var response = await GraphHelper.postSecure(body, "consumableSet");
+        var response = await GraphHelper.postSecure(body, "api/consumableSet", "");
         print(response);
         print(con.uid);
         if (response == con.uid) {
@@ -69,7 +69,7 @@ class Consumables with ChangeNotifier {
         "uid": "$conID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "consumableSwitch");
+      var data = await GraphHelper.postSecure(body, "api/consumableSwitch", "");
       if (data != null) {
         final List<Member> rotMember = [];
         data['rotationList'].forEach((mem) {
@@ -101,7 +101,7 @@ class Consumables with ChangeNotifier {
         "uid": "$comID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "consumableGet");
+      var data = await GraphHelper.postSecure(body, "api/consumableGet", "");
       if (data != null) {
         final List<Consumable> loadedConsumables = [];
         data.forEach((con) {

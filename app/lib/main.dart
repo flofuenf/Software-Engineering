@@ -1,3 +1,4 @@
+import 'package:CommuneIsm/providers/auth.dart';
 import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Commune(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Auth(),
         ),
         ChangeNotifierProvider.value(
           value: Consumables(),

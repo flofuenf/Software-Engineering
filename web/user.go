@@ -25,6 +25,7 @@ func (s *Server) getUser(c *gin.Context) {
 	if err != nil {
 		lg.PrintErr(err)
 	}
+	lg.Println(usr)
 	lib.Jsonify(c, usr, 1, err)
 
 }

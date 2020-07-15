@@ -29,6 +29,7 @@ func (s *DGraph) FetchUserByID(guid string) (interface{}, error) {
           				uid
           				name
           				birth
+						commune
         			}
 				}`
 

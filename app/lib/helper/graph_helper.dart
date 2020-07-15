@@ -1,22 +1,21 @@
 import 'dart:convert';
 
+import 'package:CommuneIsm/providers/auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-const address = "http://192.168.25.101:8000";
+const address = "http://localhost:8000";
 
 class GraphHelper {
   static Future<Map<dynamic, dynamic>> authPost(String body) async {
-    final url = "$address/auth";
+    final url = "$address/login";
     try {
       final request = new http.Request("POST", Uri.parse(url));
       request.body = body;
       request.headers['Content-Type'] = 'application/json';
       final response = await http.Client().send(request);
       String responseData = await response.stream.bytesToString();
-      if (jsonDecode(responseData)['success'] == true) {
-        return jsonDecode(responseData)['data'];
-      }
-      throw (jsonDecode(responseData)['error']);
+      return jsonDecode(responseData);
     } on http.ClientException {
       throw ("Please check your internet connection!");
     } catch (err) {
@@ -69,15 +68,16 @@ class GraphHelper {
 //  }
 
   //standard dGo function
-  static Future<dynamic> postSecure(String body, urlSegment) async {
+  static Future<dynamic> postSecure(String body, urlSegment, token) async {
     final url = "$address/$urlSegment";
     try {
       final request = new http.Request("POST", Uri.parse(url));
       request.body = body;
       request.headers['Content-Type'] = 'application/json';
-//      request.headers['Authorization'] = token;
+      request.headers['Authorization'] = token;
       final response = await http.Client().send(request);
       String responseData = await response.stream.bytesToString();
+      print(responseData);
       if (jsonDecode(responseData)['success'] == true) {
         return jsonDecode(responseData)['result'];
       }

@@ -6,12 +6,14 @@ class User extends Member with ChangeNotifier {
   String uid;
   String name;
   DateTime birth;
+  String communeID;
 
   User({
     @required this.uid,
     @required this.name,
     this.created,
     @required this.birth,
+    this.communeID,
   });
 
   void setUser(User u) {
@@ -19,5 +21,6 @@ class User extends Member with ChangeNotifier {
     this.name = u.name;
     this.created = u.created;
     this.birth = u.birth;
+    this.communeID = u.communeID;
   }
 }
