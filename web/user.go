@@ -29,57 +29,58 @@ func (s *Server) getUser(c *gin.Context) {
 
 }
 
-func (s *Server) addUser(auth *data.Auth, usr *data.User) error {
-	usr.Name = auth.Name
-	usr.Birth = auth.Birth
-
-	err := s.graph.AddUser(usr)
+func (s *Server) addUser(auth *data.Auth) error {
+	var usr = data.User{
+		Name:  auth.Name,
+		Birth: auth.Birth,
+	}
+	err := s.graph.AddUser(&usr)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	// lib.Jsonify(c, usr.GUID, 1, err)
+	auth.UserID = usr.GUID
 	return nil
 }
 
-func (s *Server) login(c *gin.Context) {
-	var auth data.Auth
-	err := c.BindJSON(&auth)
-	if err != nil {
-		lg.PrintErr(err)
-	}
-}
+// func (s *Server) login(c *gin.Context) {
+// 	var auth data.Auth
+// 	err := c.BindJSON(&auth)
+// 	if err != nil {
+// 		lg.PrintErr(err)
+// 	}
+// }
 
-func (s *Server) newUser(c *gin.Context) {
-	var auth data.Auth
-	var usr data.User
-	err := c.BindJSON(&auth)
-	if err != nil {
-		lg.PrintErr(err)
-		c.JSON(http.StatusUnprocessableEntity, "Error")
-		c.Next()
-	}
-	err = sendRegistration(&auth)
-	if err != nil {
-		lg.PrintErr(err)
-		c.JSON(http.StatusUnprocessableEntity, "Error")
-		c.Next()
-	}
-	err = s.addUser(&auth, &usr)
-	if err != nil {
-		lg.PrintErr(err)
-		c.JSON(http.StatusUnprocessableEntity, "Error")
-		c.Next()
-	}
-
-	err = updateUserBase(usr.GUID, auth.GUID)
-	if err != nil {
-		lg.PrintErr(err)
-		c.JSON(http.StatusUnprocessableEntity, "Error")
-		c.Next()
-	}
-
-	c.JSON(http.StatusOK, gin.H{"success": true})
-}
+// func (s *Server) newUser(c *gin.Context) {
+// 	var auth data.Auth
+// 	var usr data.User
+// 	err := c.BindJSON(&auth)
+// 	if err != nil {
+// 		lg.PrintErr(err)
+// 		c.JSON(http.StatusUnprocessableEntity, "Error")
+// 		c.Next()
+// 	}
+// 	err = sendRegistration(&auth)
+// 	if err != nil {
+// 		lg.PrintErr(err)
+// 		c.JSON(http.StatusUnprocessableEntity, "Error")
+// 		c.Next()
+// 	}
+// 	err = s.addUser(&auth, &usr)
+// 	if err != nil {
+// 		lg.PrintErr(err)
+// 		c.JSON(http.StatusUnprocessableEntity, "Error")
+// 		c.Next()
+// 	}
+//
+// 	err = updateUserBase(usr.GUID, auth.GUID)
+// 	if err != nil {
+// 		lg.PrintErr(err)
+// 		c.JSON(http.StatusUnprocessableEntity, "Error")
+// 		c.Next()
+// 	}
+//
+// 	c.JSON(http.StatusOK, gin.H{"success": true})
+// }
 
 func updateUserBase(userGuid, authGuid string) error {
 	url := "http://localhost:8080/update"

@@ -1,7 +1,10 @@
 package web
 
 import (
+	"net/http"
 	"strconv"
+
+	"gitlab.com/flofuenf/communeism/auth"
 
 	"git.rrdc.de/lib/errors"
 	"gitlab.com/flofuenf/communeism/data"
@@ -12,14 +15,16 @@ import (
 // Server describes the structure of the HTTP Server
 type Server struct {
 	graph   *data.DGraph
+	auth    *auth.Database
 	router  *gin.Engine
 	address string
 }
 
 // SetupServer declares the HTTP Server for further use
-func SetupServer(graph *data.DGraph, port int) *Server {
+func SetupServer(graph *data.DGraph, auth *auth.Database, port int) *Server {
 	server := &Server{
 		graph:   graph,
+		auth:    auth,
 		router:  gin.Default(),
 		address: ":" + strconv.Itoa(port),
 	}
@@ -35,7 +40,7 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) registerEndpoints() {
-	s.router.POST("/register", s.newUser)
+	s.router.POST("/register", s.register)
 	s.router.POST("/login", s.login)
 	s.router.POST("/communeGet", s.getCommune)
 	s.router.POST("/commune", s.receiveCommune)
@@ -67,6 +72,18 @@ func corsMiddleware() gin.HandlerFunc {
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := TokenValid(c.Request)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, err.Error())
+			c.Abort()
 			return
 		}
 		c.Next()

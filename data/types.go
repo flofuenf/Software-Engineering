@@ -37,6 +37,7 @@ type User struct {
 	Birth      int64  `json:"birth,omitempty"`
 }
 
+// Auth describes an Auth Object
 type Auth struct {
 	GUID         string `json:"uid"`
 	Mail         string `json:"mail"`
@@ -89,4 +90,10 @@ type Consumable struct {
 	LastBought    int64  `json:"lastBought"`
 	RotationIndex int64  `json:"rotationIndex"`
 	RotationList  []User `json:"rotationList,omitempty"`
+}
+
+type TokenDetails struct {
+	AccessToken  string
+	RefreshToken string `json:"refresh_token"`
+	UserID       string
 }
