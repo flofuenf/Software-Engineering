@@ -15,7 +15,7 @@ linters-settings:
     packages:
       # use git.rrdc.de/lib/errors instead
       - errors
-      - github.com/pkg/errors
+      #- github.com/pkg/errors
       # allow logrus only in lg package
       - github.com/sirupsen/logrus
       - github.com/tehsphinx/dbg

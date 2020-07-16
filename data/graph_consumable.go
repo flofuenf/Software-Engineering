@@ -7,9 +7,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+const conType = "Consumable"
+
 // InsertConsumable adds a Duty to Database
 func (s *DGraph) InsertConsumable(con *Consumable) error {
-	con.DGraphType = "Consumable"
+	con.DGraphType = conType
 	con.GUID = "_:" + con.DGraphType
 	con.Created = time.Now().Unix()
 	con.Changed = time.Now().Unix()
@@ -76,7 +78,7 @@ func (s *DGraph) SwitchConsumableAsBought(guid string) (Consumable, int, error) 
 
 	con.IsNeeded = !con.IsNeeded
 
-	con.DGraphType = "Consumable"
+	con.DGraphType = conType
 	_, err = s.mutateDB(con)
 	if err != nil {
 		log.Println(err)
@@ -119,7 +121,7 @@ func (s *DGraph) FetchSingleConsumableByID(guid string) (Consumable, int, error)
 
 // UpdateConsumable updates a Consumable
 func (s *DGraph) UpdateConsumable(con *Consumable) (string, int, error) {
-	con.DGraphType = "Consumable"
+	con.DGraphType = conType
 	con.Changed = time.Now().Unix()
 
 	err := s.deletePredicateDB(con.GUID, "rotationList")

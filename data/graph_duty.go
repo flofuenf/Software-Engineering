@@ -6,9 +6,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+const dutyType = "Duty"
+
 // InsertDuty adds a Duty to Database
 func (s *DGraph) InsertDuty(duty *Duty) error {
-	duty.DGraphType = "Duty"
+	duty.DGraphType = dutyType
 	duty.GUID = "_:" + duty.DGraphType
 	duty.Created = time.Now().Unix()
 	duty.Changed = time.Now().Unix()
@@ -22,6 +24,9 @@ func (s *DGraph) InsertDuty(duty *Duty) error {
 // DeleteDuty deletes one Duty by GUID
 func (s *DGraph) DeleteDuty(com *Commune) error {
 	err := s.deletePredicateDB(com.Duties[0].GUID, "rotationList")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	err = s.deleteObjectDB(com.GUID, "duties", com.Duties[0].GUID)
 	if err == nil {
 		err = s.deleteEdgeDB(com.Duties[0].GUID)
@@ -31,7 +36,7 @@ func (s *DGraph) DeleteDuty(com *Commune) error {
 
 // UpdateDuty updates a Duty
 func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
-	duty.DGraphType = "Duty"
+	duty.DGraphType = dutyType
 	duty.Changed = time.Now().Unix()
 
 	err := s.deletePredicateDB(duty.GUID, "rotationList")
@@ -51,14 +56,14 @@ func (s *DGraph) SetDutyAsDone(guid string) (Duty, int, error) {
 		return Duty{}, 0, errors.WithStack(err)
 	}
 	duty.LastDone = time.Now().Unix()
-	duty.NextDone = duty.NextDone + duty.RotationTime
+	duty.NextDone += duty.RotationTime
 	if int(duty.RotationIndex) != len(duty.RotationList)-1 {
 		duty.RotationIndex++
 	} else {
 		duty.RotationIndex = 0
 	}
 
-	duty.DGraphType = "Duty"
+	duty.DGraphType = dutyType
 	_, err = s.mutateDB(duty)
 	if err != nil {
 		return Duty{}, 0, errors.WithStack(err)

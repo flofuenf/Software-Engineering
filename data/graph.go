@@ -33,16 +33,17 @@ func SetupDgraph(url string) (*DGraph, error) {
 	}, nil
 }
 
-func (s *DGraph) queryDB(query string, object interface{}) error {
-	req := s.client.NewReadOnlyTxn()
-	req.BestEffort()
-	res, err := req.Query(s.ctx, query)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	err = json.Unmarshal(res.Json, object)
-	return errors.WithStack(err)
-}
+// ############# Commented out because it's not used (yet) #############
+// func (s *DGraph) queryDB(query string, object interface{}) error {
+// 	req := s.client.NewReadOnlyTxn()
+// 	req.BestEffort()
+// 	res, err := req.Query(s.ctx, query)
+// 	if err != nil {
+// 		return errors.WithStack(err)
+// 	}
+// 	err = json.Unmarshal(res.Json, object)
+// 	return errors.WithStack(err)
+// }
 
 func (s *DGraph) mutateDB(object interface{}) (map[string]string, error) {
 	req := s.client.NewTxn()
