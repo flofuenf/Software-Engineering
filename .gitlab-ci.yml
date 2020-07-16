@@ -120,6 +120,6 @@ containerize_app:
     - echo $CI_REGISTRY_IMAGE
     - echo $CI_COMMIT_REF_SLUG
     - docker build -t communeism:$CI_COMMIT_TAG -f ./Dockerfile .
-    - docker push $IMAGE_TAG
+    - docker push communeism:$CI_COMMIT_TAG
     - docker rmi $(docker images --quiet --filter "dangling=true") || true
     - docker volume rm $(docker volume ls -qf dangling=true) || true
