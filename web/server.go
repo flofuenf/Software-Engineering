@@ -4,13 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/pkg/errors"
-
-	"gitlab.com/flofuenf/communeism/auth"
-
-	"gitlab.com/flofuenf/communeism/data"
-
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
+	"gitlab.com/flofuenf/communeism/auth"
+	"gitlab.com/flofuenf/communeism/data"
 )
 
 // Server describes the structure of the HTTP Server

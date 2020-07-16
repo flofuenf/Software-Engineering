@@ -93,6 +93,7 @@ type Consumable struct {
 	RotationList  []User `json:"rotationList,omitempty"`
 }
 
+// TokenDetails describes an JWT Token
 type TokenDetails struct {
 	AccessToken  string
 	RefreshToken string `json:"refresh_token"`

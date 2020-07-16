@@ -1,7 +1,6 @@
 package data
 
 import (
-	"log"
 	"time"
 
 	"github.com/pkg/errors"
@@ -39,7 +38,7 @@ func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 	if err == nil {
 		_, err := s.mutateDB(duty)
 		if err != nil {
-			log.Println(err)
+			return "", 0, errors.WithStack(err)
 		}
 	}
 	return duty.GUID, 1, err
@@ -49,7 +48,7 @@ func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 func (s *DGraph) SetDutyAsDone(guid string) (Duty, int, error) {
 	duty, _, err := s.FetchSingleDutyByID(guid)
 	if err != nil {
-		log.Println(err)
+		return Duty{}, 0, errors.WithStack(err)
 	}
 	duty.LastDone = time.Now().Unix()
 	duty.NextDone = duty.NextDone + duty.RotationTime
@@ -62,7 +61,7 @@ func (s *DGraph) SetDutyAsDone(guid string) (Duty, int, error) {
 	duty.DGraphType = "Duty"
 	_, err = s.mutateDB(duty)
 	if err != nil {
-		log.Println(err)
+		return Duty{}, 0, errors.WithStack(err)
 	}
 
 	return duty, 1, nil

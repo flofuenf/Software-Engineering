@@ -7,14 +7,13 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/flofuenf/communeism/data"
-
-	"github.com/gin-gonic/gin"
-	"gitlab.com/flofuenf/communeism/lib"
-
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"gitlab.com/flofuenf/communeism/data"
+	"gitlab.com/flofuenf/communeism/lib"
 )
 
+// TokenValid checks if a token is valid
 func TokenValid(r *http.Request) error {
 	token, err := verifyToken(r)
 	if err != nil {
@@ -97,6 +96,7 @@ func (s *Server) login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// CreateToken creates a new token pair
 func CreateToken(userID string) (*data.TokenDetails, error) {
 	td := &data.TokenDetails{}
 	td.UserID = userID
@@ -106,7 +106,6 @@ func CreateToken(userID string) (*data.TokenDetails, error) {
 	var err error
 	// Creating Access Token
 	// TODO: Secret as ENV!!!
-	os.Setenv("ACCESS_SECRET", "secret")
 	atClaims := jwt.MapClaims{}
 	atClaims["user_id"] = userID
 	atClaims["exp"] = td.AtExpires
@@ -118,7 +117,6 @@ func CreateToken(userID string) (*data.TokenDetails, error) {
 
 	// //Creating Refresh Token
 	// // TODO: Secret as ENV!!!
-	os.Setenv("REFRESH_SECRET", "secret")
 	rtClaims := jwt.MapClaims{}
 	rtClaims["user_id"] = userID
 	rtClaims["exp"] = td.RtExpires
@@ -174,7 +172,7 @@ func (s *Server) refresh(c *gin.Context) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte("secret"), nil
+		return []byte(os.Getenv("REFRESH_SECRET")), nil
 	})
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "Non valid Refresh Token")

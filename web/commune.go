@@ -12,7 +12,7 @@ func (s *Server) receiveCommune(c *gin.Context) {
 	var com data.Commune
 	err := c.BindJSON(&com)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	err = s.graph.InsertCommune(&com)
@@ -23,7 +23,7 @@ func (s *Server) getCommune(c *gin.Context) {
 	var input data.Commune
 	err := c.BindJSON(&input)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	com, err := s.graph.FetchCommuneByID(input.GUID)
@@ -37,11 +37,11 @@ func (s *Server) joinCommune(c *gin.Context) {
 	var input data.Commune
 	err := c.BindJSON(&input)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 	err = s.graph.JoinCommuneByID(input.GUID, input.Members[0].GUID)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 	lib.Jsonify(c, nil, 1, err)
 }

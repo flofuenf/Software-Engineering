@@ -12,12 +12,12 @@ func (s *Server) receiveConsumable(c *gin.Context) {
 	var com data.Commune
 	err := c.BindJSON(&com)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	err = s.graph.InsertConsumable(&com.Consumables[0])
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	err = s.graph.AddConsumableByID(com.GUID, com.Consumables[0].GUID)
@@ -29,12 +29,12 @@ func (s *Server) getConsumables(c *gin.Context) {
 	var com data.Commune
 	err := c.BindJSON(&com)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	consumables, count, err := s.graph.FetchConsumablesByID(com.GUID)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	lib.Jsonify(c, consumables, count, err)
@@ -44,7 +44,7 @@ func (s *Server) switchConsumableBought(c *gin.Context) {
 	var con data.Consumable
 	err := c.BindJSON(&con)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	con, count, err := s.graph.SwitchConsumableAsBought(con.GUID)
@@ -56,7 +56,7 @@ func (s *Server) setConsumable(c *gin.Context) {
 	var con data.Consumable
 	err := c.BindJSON(&con)
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 
 	guid, count, err := s.graph.UpdateConsumable(&con)

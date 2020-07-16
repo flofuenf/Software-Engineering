@@ -20,8 +20,8 @@ type DGraph struct {
 	ctx    context.Context
 }
 
-// SetupGraphClient declares the DGraph Client for further use
-func SetupGraphClient(url string) (*DGraph, error) {
+// SetupDgraph declares the DGraph Client for further use
+func SetupDgraph(url string) (*DGraph, error) {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -89,52 +89,6 @@ func (s *DGraph) mutateSinglePred(uid, pred, obj string) error {
 	return errors.WithStack(err)
 }
 
-//
-// func (s *DGraph) mutateSinglePredInt(uid, pred string, obj int) error {
-// 	req := s.client.NewTxn()
-//
-// 	mu := &api.Mutation{
-// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %v}]`, uid, pred, obj)),
-// 		CommitNow: true,
-// 	}
-//
-// 	_, err := req.Mutate(s.ctx, mu)
-// 	if err != nil {
-// 		return errors.WithStack(err)
-// 	}
-// 	return errors.WithStack(err)
-// }
-
-// func (s *DGraph) mutateSinglePredFloat(uid, pred string, obj float32) error {
-// 	req := s.client.NewTxn()
-//
-// 	mu := &api.Mutation{
-// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %f}]`, uid, pred, obj)),
-// 		CommitNow: true,
-// 	}
-//
-// 	_, err := req.Mutate(s.ctx, mu)
-// 	if err != nil {
-// 		return errors.WithStack(err)
-// 	}
-// 	return errors.WithStack(err)
-// }
-//
-// func (s *DGraph) mutateSinglePredBool(uid, pred string, obj bool) error {
-// 	req := s.client.NewTxn()
-//
-// 	mu := &api.Mutation{
-// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %v}]`, uid, pred, obj)),
-// 		CommitNow: true,
-// 	}
-//
-// 	_, err := req.Mutate(s.ctx, mu)
-// 	if err != nil {
-// 		return errors.WithStack(err)
-// 	}
-// 	return errors.WithStack(err)
-// }
-
 func (s *DGraph) deleteObjectDB(uid, pred, obj string) error {
 	req := s.client.NewTxn()
 
@@ -189,6 +143,51 @@ func (s *DGraph) deleteEdgeDB(uid string) error {
 
 // Close closes the established connection
 func (s *DGraph) Close() {
-	err := s.conn.Close()
-	log.Println(err)
+	log.Println(s.conn.Close())
 }
+
+// ###########################These functions may be needed (no complete package till now)###########################
+// func (s *DGraph) mutateSinglePredInt(uid, pred string, obj int) error {
+// 	req := s.client.NewTxn()
+//
+// 	mu := &api.Mutation{
+// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %v}]`, uid, pred, obj)),
+// 		CommitNow: true,
+// 	}
+//
+// 	_, err := req.Mutate(s.ctx, mu)
+// 	if err != nil {
+// 		return errors.WithStack(err)
+// 	}
+// 	return errors.WithStack(err)
+// }
+
+// func (s *DGraph) mutateSinglePredFloat(uid, pred string, obj float32) error {
+// 	req := s.client.NewTxn()
+//
+// 	mu := &api.Mutation{
+// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %f}]`, uid, pred, obj)),
+// 		CommitNow: true,
+// 	}
+//
+// 	_, err := req.Mutate(s.ctx, mu)
+// 	if err != nil {
+// 		return errors.WithStack(err)
+// 	}
+// 	return errors.WithStack(err)
+// }
+//
+// func (s *DGraph) mutateSinglePredBool(uid, pred string, obj bool) error {
+// 	req := s.client.NewTxn()
+//
+// 	mu := &api.Mutation{
+// 		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": %v}]`, uid, pred, obj)),
+// 		CommitNow: true,
+// 	}
+//
+// 	_, err := req.Mutate(s.ctx, mu)
+// 	if err != nil {
+// 		return errors.WithStack(err)
+// 	}
+// 	return errors.WithStack(err)
+// }
