@@ -52,8 +52,7 @@ build_static:
     - flutter config --enable-web
     - flutter pub get
     - flutter build web
-    - cp ./build/web ../static
-    - mv ./build/web $CI_PROJECT_DIR/release
+    - mv ./build/web ../static
   artifacts:
     paths:
       - $CI_PROJECT_DIR/release/
