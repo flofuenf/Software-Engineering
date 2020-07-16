@@ -55,7 +55,6 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.grey,
             accentColor: Colors.deepOrange,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           home: app.isLoaded
               ? Dashboard()
