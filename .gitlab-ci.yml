@@ -99,12 +99,12 @@ gomod-check:
     - go_mod_tidy.sh
 
 containerize_app:
-  image: docker:stable
+  image: docker:19.03.12
   stage: containerize
   services:
-    - docker:dind
-#  variables:
-#    DOCKERHOST: tcp://docker:2376
+    - docker:19.03.12-dind
+  variables:
+    DOCKERHOST: tcp://docker:2376
   allow_failure: false
   only:
     - tags
