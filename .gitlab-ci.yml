@@ -101,6 +101,10 @@ gomod-check:
 containerize_app:
   image: docker:stable
   stage: containerize
+  services:
+    - docker:stable-dind
+  variables:
+    DOCKERHOST: tcp://docker:2376
   allow_failure: false
   only:
     - tags
