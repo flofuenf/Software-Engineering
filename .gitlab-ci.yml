@@ -43,10 +43,10 @@ build_static:
     - tar -xf flutter-sdk.tar.xz
     - export PATH=$PATH:$PWD/flutter/bin
     - echo flutter.sdk=$PWD/flutter > android/local.properties
-  tags:
-    - unix
-    - docker
-    - multi
+  #tags:
+    #- unix
+    #- docker
+    #- multi
   script:
     - cd ./app
     - flutter pub get
