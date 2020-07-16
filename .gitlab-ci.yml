@@ -17,7 +17,7 @@ stages:
 
 build_static:
   image: openjdk:8-jdk
-  stage: prepare
+  stage: pre
   allow_failure: false
   variables:
     ANDROID_COMPILE_SDK: "28"
