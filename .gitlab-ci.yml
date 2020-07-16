@@ -49,6 +49,7 @@ build_static:
     #- multi
   script:
     - cd ./app
+    - flutter config --enable-web
     - flutter pub get
     - flutter build web
     - cp ./build/web ../static
