@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"gitlab.com/flofuenf/communeism/auth"
@@ -28,7 +29,7 @@ func SetupServer(graph *data.DGraph, auth *auth.Database, port int) *Server {
 		secure:  nil,
 		address: ":" + strconv.Itoa(port),
 	}
-	server.router.Use(corsMiddleware())
+	server.router.Use(corsMiddleware()).Use(static.Serve("/", static.LocalFile("./static", true)))
 	server.secure = server.router.Group("api")
 	server.secure.Use(corsMiddleware()).Use(authMiddleware())
 	server.registerEndpoints()
