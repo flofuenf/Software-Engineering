@@ -7,6 +7,7 @@ FROM flofuenf/flutter_build:latest as flutterBuilder
 RUN mkdir /usr/local/communeism
 COPY . /usr/local/communeism
 WORKDIR /usr/local/communeism
+RUN ls -la
 RUN /usr/local/flutter/bin/flutter build web --release
 
 ###############################################
