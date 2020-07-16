@@ -42,7 +42,7 @@ build_static:
     - wget --output-document=flutter-sdk.tar.xz $FLUTTER_VERSION
     - tar -xf flutter-sdk.tar.xz
     - export PATH=$PATH:$PWD/flutter/bin
-    - echo flutter.sdk=$PWD/flutter > android/local.properties
+    #- echo flutter.sdk=$PWD/flutter > android/local.properties
   #tags:
     #- unix
     #- docker
