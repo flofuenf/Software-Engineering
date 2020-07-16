@@ -52,10 +52,9 @@ build_static:
     - flutter config --enable-web
     - flutter pub get
     - flutter build web
-    - mv ./build/web ../static
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/release/
+    - cd ..
+    - mv ./app/build/web ./static
+    - ls -la
 
 build_app:
   image: golang:1.13.3
