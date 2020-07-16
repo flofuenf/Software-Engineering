@@ -3,11 +3,15 @@ import 'package:CommuneIsm/models/consumable.dart';
 import 'package:CommuneIsm/models/member.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'auth.dart';
+
 class Consumables with ChangeNotifier {
   List<Consumable> items = [];
+  Auth auth;
 
   Consumables({
     this.items,
+    this.auth,
   });
 
   List<Consumable> get list {
@@ -49,7 +53,7 @@ class Consumables with ChangeNotifier {
           ]
          }
         ''';
-        var response = await GraphHelper.postSecure(body, "api/consumableSet", "");
+        var response = await GraphHelper.postSecure(body, "api/consumableSet", auth.accessToken);
         if (response == con.uid) {
           items[items.indexWhere((item) => item.uid == con.uid)] = con;
           fetchConsumables(comID);
@@ -67,7 +71,7 @@ class Consumables with ChangeNotifier {
         "uid": "$conID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "api/consumableSwitch", "");
+      var data = await GraphHelper.postSecure(body, "api/consumableSwitch", auth.accessToken);
       if (data != null) {
         final List<Member> rotMember = [];
         data['rotationList'].forEach((mem) {
@@ -99,7 +103,7 @@ class Consumables with ChangeNotifier {
         "uid": "$comID"
       }''';
     try {
-      var data = await GraphHelper.postSecure(body, "api/consumableGet", "");
+      var data = await GraphHelper.postSecure(body, "api/consumableGet", auth.accessToken);
       if (data != null) {
         final List<Consumable> loadedConsumables = [];
         data.forEach((con) {

@@ -29,8 +29,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: AppState(),
         ),
-        ChangeNotifierProvider.value(
-          value: Duties(),
+        ChangeNotifierProxyProvider<AppState, Duties>(
+          //Duties
+          builder: (ctx, app, prevDuties) => Duties(
+            auth: app.auth, items: prevDuties == null ? [] : prevDuties.items
+          ),
         ),
         ChangeNotifierProvider.value(
           value: Commune(),
@@ -38,8 +41,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
-        ChangeNotifierProvider.value(
-          value: Consumables(),
+        ChangeNotifierProxyProvider<AppState, Consumables>(
+          //Consumables
+          builder: (ctx, app, prevCons) => Consumables(
+            auth: app.auth, items: prevCons == null ? [] : prevCons.items
+          ),
         ),
       ],
       child: Consumer<AppState>(

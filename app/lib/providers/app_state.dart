@@ -24,7 +24,7 @@ class AppState with ChangeNotifier {
   });
 
   bool get isLoaded {
-    return (user != null && commune != null && auth.accessToken != null);
+    return (user != null && commune != null && auth.accessToken != null && auth.atExp.isAfter(DateTime.now()));
   }
 
   String get comID {
@@ -107,18 +107,18 @@ class AppState with ChangeNotifier {
         accessToken: prefsData['accessToken'],
         refreshToken: prefsData['refreshToken'],
         atExp:
-            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['atExp'])),
+            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['atExp']) * 1000),
         rtExp:
-            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['rtExp'])),
+            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['rtExp']) * 1000),
       );
 
-      if (auth.atExp.isAfter(DateTime.now())) {
-        //do refresh
+      if (!auth.atExp.isAfter(DateTime.now())) {
+        print("refresh token");
       }
 //      auth.rtExp = DateTime.now().subtract(Duration(days: 1));
 
-      if (auth.rtExp.isAfter(DateTime.now())) {
-        print("rt is Before");
+      if (!auth.rtExp.isAfter(DateTime.now())) {
+        print("refresh Refresh");
         return;
       }
       await initApp();
