@@ -91,6 +91,8 @@ func (s *Server) login(c *gin.Context) {
 		"user_id":       token.UserID,
 		"access_token":  token.AccessToken,
 		"refresh_token": token.RefreshToken,
+		"atExp":         token.AtExpires,
+		"rtExp":         token.RtExpires,
 	}
 	c.JSON(http.StatusOK, response)
 }
@@ -98,8 +100,8 @@ func (s *Server) login(c *gin.Context) {
 func CreateToken(userID string) (*data.TokenDetails, error) {
 	td := &data.TokenDetails{}
 	td.UserID = userID
-	atExpires := time.Now().Add(time.Minute * 15).Unix()
-	rtExpires := time.Now().Add(time.Hour * 72).Unix()
+	td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
+	td.RtExpires = time.Now().Add(time.Hour * 72).Unix()
 
 	var err error
 	// Creating Access Token
@@ -107,7 +109,7 @@ func CreateToken(userID string) (*data.TokenDetails, error) {
 	os.Setenv("ACCESS_SECRET", "secret")
 	atClaims := jwt.MapClaims{}
 	atClaims["user_id"] = userID
-	atClaims["exp"] = atExpires
+	atClaims["exp"] = td.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	td.AccessToken, err = at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 	if err != nil {
@@ -119,7 +121,7 @@ func CreateToken(userID string) (*data.TokenDetails, error) {
 	os.Setenv("REFRESH_SECRET", "secret")
 	rtClaims := jwt.MapClaims{}
 	rtClaims["user_id"] = userID
-	rtClaims["exp"] = rtExpires
+	rtClaims["exp"] = td.RtExpires
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 	td.RefreshToken, err = rt.SignedString([]byte(os.Getenv("REFRESH_SECRET")))
 	if err != nil {
@@ -160,4 +162,38 @@ func (s *Server) register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"uid": auth.UserID,
 	})
+}
+
+func (s *Server) refresh(c *gin.Context) {
+	var tokenReq data.TokenDetails
+	if err := c.Bind(&tokenReq); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, "Internal Error")
+	}
+
+	token, err := jwt.Parse(tokenReq.RefreshToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte("secret"), nil
+	})
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "Non valid Refresh Token")
+		return
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID := fmt.Sprintf("%s", claims["user_id"])
+		check, err := s.auth.CheckUserID(userID)
+		if err != nil || !check {
+			c.JSON(http.StatusUnauthorized, "Token error, no user found")
+			return
+		}
+		newTokenPair, err := CreateToken(userID)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, "Internal Error")
+			return
+		}
+
+		c.JSON(http.StatusOK, newTokenPair)
+	}
 }

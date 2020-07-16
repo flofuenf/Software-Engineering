@@ -77,7 +77,6 @@ class GraphHelper {
       request.headers['Authorization'] = token;
       final response = await http.Client().send(request);
       String responseData = await response.stream.bytesToString();
-      print(responseData);
       if (jsonDecode(responseData)['success'] == true) {
         return jsonDecode(responseData)['result'];
       }

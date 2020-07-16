@@ -29,7 +29,6 @@ class Duties with ChangeNotifier {
          ]
       }''';
 
-    print(body);
     try {
       var response = await GraphHelper.postSecure(body, "api/dutyDelete", "");
       if (response != ""){

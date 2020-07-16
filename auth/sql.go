@@ -16,9 +16,10 @@ import (
 )
 
 var (
-	fetchUser  *sql.Stmt
-	insertUser *sql.Stmt
-	updateUser *sql.Stmt
+	fetchUser   *sql.Stmt
+	fetchUserID *sql.Stmt
+	insertUser  *sql.Stmt
+	updateUser  *sql.Stmt
 )
 
 // Database describes an Database Object
@@ -71,6 +72,29 @@ func (s *Database) GetUser(user *data.Auth) error {
 		return errors.WithStack(err)
 	}
 	return err
+}
+
+func (s *Database) CheckUserID(userID string) (bool, error) {
+	var (
+		err  error
+		user data.Auth
+	)
+
+	if fetchUserID == nil {
+		if fetchUserID, err = s.Conn.Prepare(`SELECT * FROM auth WHERE user_id = ?`); err != nil {
+			return false, errors.WithStack(err)
+		}
+	}
+	row := fetchUserID.QueryRow(userID)
+	if err = row.Scan(&user.GUID, &user.Mail, &user.Pass, &user.UserID); err != nil {
+		lg.Println(err)
+		return false, errors.WithStack(err)
+	}
+
+	if user.UserID != userID {
+		return false, errors.WithStack(errors.New("User not found"))
+	}
+	return true, err
 }
 
 func (s *Database) InsertUser(user *data.Auth) error {

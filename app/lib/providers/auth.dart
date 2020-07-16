@@ -4,11 +4,15 @@ class Auth with ChangeNotifier{
   String userID;
   String accessToken;
   String refreshToken;
+  DateTime atExp;
+  DateTime rtExp;
 
   Auth({
     this.userID,
     this.accessToken,
     this.refreshToken,
+    this.atExp,
+    this.rtExp,
   });
 
 //  bool get isAuth {
@@ -103,8 +107,6 @@ class Auth with ChangeNotifier{
 //    }''';
 //    try {
 //      final res = await GraphHelper.postSecure(body, token, "setFavorite");
-//      print(res);
-//      print("after favorite post res: $res");
 //
 //      if (hasFavorited == null) {
 //        hasFavorited = [];
@@ -127,7 +129,6 @@ class Auth with ChangeNotifier{
 //    }''';
 //    try {
 //      final res = await GraphHelper.postSecure(body, token, "delFavorite");
-//      print(res);
 //      if (hasFavorited == null) {
 //        hasFavorited = [];
 //      }

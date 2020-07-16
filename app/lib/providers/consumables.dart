@@ -50,8 +50,6 @@ class Consumables with ChangeNotifier {
          }
         ''';
         var response = await GraphHelper.postSecure(body, "api/consumableSet", "");
-        print(response);
-        print(con.uid);
         if (response == con.uid) {
           items[items.indexWhere((item) => item.uid == con.uid)] = con;
           fetchConsumables(comID);

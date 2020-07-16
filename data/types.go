@@ -97,4 +97,6 @@ type TokenDetails struct {
 	AccessToken  string
 	RefreshToken string `json:"refresh_token"`
 	UserID       string
+	AtExpires    int64
+	RtExpires    int64
 }

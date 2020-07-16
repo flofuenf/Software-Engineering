@@ -47,6 +47,7 @@ func (s *Server) Run() error {
 func (s *Server) registerEndpoints() {
 	s.router.POST("/register", s.register)
 	s.router.POST("/login", s.login)
+	s.router.POST("token/refresh", s.refresh)
 }
 
 func (s *Server) registerSecureEndpoints() {
