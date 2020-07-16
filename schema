@@ -16,6 +16,7 @@ type User {
     name
     created
     birth
+    commune
 }
 
 type Address {
@@ -54,6 +55,7 @@ members: [uid] .
 address : uid .
 birth: int .
 street: string .
+commune: string .
 city: string .
 zip: string .
 changed: int .

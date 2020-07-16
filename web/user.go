@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
 
-	"git.rrdc.de/lib/lg"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/flofuenf/communeism/data"
 	"gitlab.com/flofuenf/communeism/lib"
@@ -19,13 +19,13 @@ func (s *Server) getUser(c *gin.Context) {
 	var input data.User
 	err := c.BindJSON(&input)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Print(err)
 	}
 	usr, err := s.graph.FetchUserByID(input.GUID)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Print(err)
 	}
-	lg.Println(usr)
+	log.Println(usr)
 	lib.Jsonify(c, usr, 1, err)
 
 }

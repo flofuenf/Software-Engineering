@@ -1,9 +1,9 @@
 package lib
 
 import (
+	"log"
 	"net/http"
 
-	"git.rrdc.de/lib/lg"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +13,7 @@ func Jsonify(c *gin.Context, rows interface{}, count int, err error) {
 	if err != nil {
 		success = false
 		count = 0
-		lg.PrintErrWithStack(err)
+		log.Print(err)
 	}
 	result := gin.H{
 		"success": success,

@@ -1,11 +1,10 @@
 package data
 
 import (
+	"log"
 	"time"
 
-	"git.rrdc.de/lib/lg"
-
-	"git.rrdc.de/lib/errors"
+	"github.com/pkg/errors"
 )
 
 // InsertConsumable adds a Duty to Database
@@ -63,7 +62,7 @@ func (s *DGraph) FetchConsumablesByID(guid string) (interface{}, int, error) {
 func (s *DGraph) SwitchConsumableAsBought(guid string) (Consumable, int, error) {
 	con, _, err := s.FetchSingleConsumableByID(guid)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Println(err)
 	}
 
 	if con.IsNeeded {
@@ -80,7 +79,7 @@ func (s *DGraph) SwitchConsumableAsBought(guid string) (Consumable, int, error) 
 	con.DGraphType = "Consumable"
 	_, err = s.mutateDB(con)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Println(err)
 	}
 
 	return con, 1, nil
@@ -127,7 +126,7 @@ func (s *DGraph) UpdateConsumable(con *Consumable) (string, int, error) {
 	if err == nil {
 		_, err := s.mutateDB(con)
 		if err != nil {
-			lg.PrintErr(err)
+			log.Println(err)
 		}
 	}
 	return con.GUID, 1, err

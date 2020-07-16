@@ -1,11 +1,10 @@
 package data
 
 import (
+	"log"
 	"time"
 
-	"git.rrdc.de/lib/lg"
-
-	"git.rrdc.de/lib/errors"
+	"github.com/pkg/errors"
 )
 
 // InsertDuty adds a Duty to Database
@@ -40,7 +39,7 @@ func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 	if err == nil {
 		_, err := s.mutateDB(duty)
 		if err != nil {
-			lg.PrintErr(err)
+			log.Println(err)
 		}
 	}
 	return duty.GUID, 1, err
@@ -50,7 +49,7 @@ func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 func (s *DGraph) SetDutyAsDone(guid string) (Duty, int, error) {
 	duty, _, err := s.FetchSingleDutyByID(guid)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Println(err)
 	}
 	duty.LastDone = time.Now().Unix()
 	duty.NextDone = duty.NextDone + duty.RotationTime
@@ -63,7 +62,7 @@ func (s *DGraph) SetDutyAsDone(guid string) (Duty, int, error) {
 	duty.DGraphType = "Duty"
 	_, err = s.mutateDB(duty)
 	if err != nil {
-		lg.PrintErr(err)
+		log.Println(err)
 	}
 
 	return duty, 1, nil

@@ -3,10 +3,10 @@ package data
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
-	"git.rrdc.de/lib/lg"
+	"github.com/pkg/errors"
 
-	"git.rrdc.de/lib/errors"
 	dgo "github.com/dgraph-io/dgo/v2"
 	"github.com/dgraph-io/dgo/v2/protos/api"
 	"golang.org/x/net/context"
@@ -190,5 +190,5 @@ func (s *DGraph) deleteEdgeDB(uid string) error {
 // Close closes the established connection
 func (s *DGraph) Close() {
 	err := s.conn.Close()
-	lg.PrintErrWithStack(err)
+	log.Println(err)
 }

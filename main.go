@@ -2,15 +2,15 @@ package main
 
 import (
 	"flag"
+	"log"
+
+	"github.com/pkg/errors"
 
 	"gitlab.com/flofuenf/communeism/auth"
 
-	"git.rrdc.de/lib/errors"
 	"gitlab.com/flofuenf/communeism/web"
 
 	"gitlab.com/flofuenf/communeism/data"
-
-	"git.rrdc.de/lib/lg"
 )
 
 var (
@@ -26,7 +26,7 @@ func main() {
 	flag.Parse()
 
 	if err := run(); err != nil {
-		lg.PrintErr(err, lg.PanicLevel)
+		log.Fatal(err)
 	}
 }
 

@@ -2,8 +2,9 @@ package auth
 
 import (
 	"fmt"
+	"log"
 
-	"git.rrdc.de/lib/lg"
+	"github.com/pkg/errors"
 
 	"gitlab.com/flofuenf/communeism/data"
 
@@ -11,7 +12,6 @@ import (
 
 	"database/sql"
 
-	"git.rrdc.de/lib/errors"
 	_ "github.com/go-sql-driver/mysql" // golint
 )
 
@@ -67,8 +67,8 @@ func (s *Database) GetUser(user *data.Auth) error {
 	}
 	row := fetchUser.QueryRow(user.Mail)
 	if err = row.Scan(&user.GUID, &user.Mail, &user.Pass, &user.UserID); err != nil {
-		lg.Println(err)
-		lg.Println("Row Scann error")
+		log.Println(err)
+		log.Println("Row Scann error")
 		return errors.WithStack(err)
 	}
 	return err
@@ -87,7 +87,7 @@ func (s *Database) CheckUserID(userID string) (bool, error) {
 	}
 	row := fetchUserID.QueryRow(userID)
 	if err = row.Scan(&user.GUID, &user.Mail, &user.Pass, &user.UserID); err != nil {
-		lg.Println(err)
+		log.Println(err)
 		return false, errors.WithStack(err)
 	}
 

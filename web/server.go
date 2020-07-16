@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/pkg/errors"
+
 	"gitlab.com/flofuenf/communeism/auth"
 
-	"git.rrdc.de/lib/errors"
 	"gitlab.com/flofuenf/communeism/data"
 
 	"github.com/gin-gonic/gin"

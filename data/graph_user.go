@@ -3,7 +3,7 @@ package data
 import (
 	"time"
 
-	"git.rrdc.de/lib/errors"
+	"github.com/pkg/errors"
 )
 
 // AddUser adds a User to Database

@@ -3,7 +3,7 @@ package data
 import (
 	"time"
 
-	"git.rrdc.de/lib/errors"
+	"github.com/pkg/errors"
 )
 
 // InsertCommune adds a Commune to Database
