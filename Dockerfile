@@ -5,9 +5,8 @@ FROM flofuenf/flutter_build:latest as flutterBuilder
 
 # Copy files to container and build
 RUN mkdir /usr/local/communeism
-COPY . /usr/local/communeism
+COPY ./app /usr/local/communeism
 WORKDIR /usr/local/communeism
-RUN ls -la
 RUN /usr/local/flutter/bin/flutter build web --release
 
 ###############################################
