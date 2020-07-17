@@ -1,6 +1,7 @@
 package data
 
 import (
+	"log"
 	"time"
 
 	"github.com/pkg/errors"
@@ -27,7 +28,7 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
 		comWrap CommuneWrapper
 		vars    = make(map[string]string)
 	)
-
+	log.Println(guid)
 	vars["$guid"] = guid
 	query := `query query($guid: string){
 					query(func: uid($guid))@filter(type(Commune)){

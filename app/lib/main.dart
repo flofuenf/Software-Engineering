@@ -2,6 +2,7 @@ import 'package:CommuneIsm/providers/auth.dart';
 import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
+import 'package:CommuneIsm/screens/login/join_screen.dart';
 import 'package:CommuneIsm/screens/login/login_screen.dart';
 import 'package:CommuneIsm/screens/login/welcome_screen.dart';
 
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
             EditConsumableScreen.routeName: (ctx) => app.isLoaded ? EditConsumableScreen() : CircularProgressIndicator(),
             LoginScreen.routeName: (ctx) => app.isLoaded ? Dashboard() : LoginScreen(),
             RegisterScreen.routeName: (ctx) => app.isLoaded ? Dashboard() : RegisterScreen(),
+            JoinScreen.routeName: (ctx) => JoinScreen(),
           },
         ),
       ),

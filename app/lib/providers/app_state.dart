@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:CommuneIsm/models/member.dart';
 import 'package:CommuneIsm/providers/auth.dart';
+import 'package:CommuneIsm/screens/login/join_screen.dart';
 
 import '../models/address.dart';
 
@@ -25,6 +26,10 @@ class AppState with ChangeNotifier {
 
   bool get isLoaded {
     return (user != null && commune != null && auth.accessToken != null && auth.atExp.isAfter(DateTime.now()));
+  }
+
+  bool get hasCommune{
+    return this.user == null || this.user.communeID != "";
   }
 
   String get comID {
@@ -80,23 +85,26 @@ class AppState with ChangeNotifier {
       throw (err);
     }
 
-    if (user.communeID == null) {
+    if (user.communeID == "") {
       print("no Commune for User");
-      //go to Commune Selection / Invitation
       return;
+      //go to Commune Selection / Invitation
     }
 
     try {
       await fetchCommune(user.communeID);
+      print(user.communeID);
     } catch (err) {
       throw (err);
     }
   }
 
-  Future<void> loadApp() async {
+  Future<void> loadApp(BuildContext ctx) async {
+    print("load App");
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!prefs.containsKey('authData')) {
+        print("no authData");
         return;
       }
 
@@ -182,10 +190,9 @@ class AppState with ChangeNotifier {
           name: data['name'],
           birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
           communeID: data['commune']);
+      print(data);
       notifyListeners();
     } catch (err) {
-      user = null;
-      notifyListeners();
       throw (err);
     }
   }
