@@ -4,6 +4,7 @@ class JoinScreen extends StatelessWidget {
   static const routeName = "/join";
   @override
   Widget build(BuildContext context) {
+    print("asdibasdsa");
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(

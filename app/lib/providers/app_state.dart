@@ -72,7 +72,7 @@ class AppState with ChangeNotifier {
             "rtExp": auth.rtExp.millisecondsSinceEpoch.toString(),
           });
           prefs.setString('authData', authData);
-          initApp();
+          notifyListeners();
         } catch (err) {
           throw (err);
         }
@@ -175,7 +175,6 @@ class AppState with ChangeNotifier {
         ),
         members: getMembers(data['members']),
       );
-      notifyListeners();
       return commune;
     } catch (err) {
       return null;
@@ -196,7 +195,6 @@ class AppState with ChangeNotifier {
           birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
           communeID: data['commune']);
       print(data);
-      notifyListeners();
       return user;
     } catch (err) {
       return null;

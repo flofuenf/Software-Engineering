@@ -75,6 +75,7 @@ class _AuthFormState extends State<AuthForm> {
     if(_authData['mail'].length > 1 && _authData['pw'].length > 1){
       try {
         await Provider.of<AppState>(context, listen: false).login(_authData);
+        Navigator.of(context).pop();
       } catch (err) {
         showDialog(
           context: context,

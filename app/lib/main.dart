@@ -36,6 +36,7 @@ class CommuneFuture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("com future");
     return FutureBuilder<Commune>(
       future: app.fetchCommune(comId),
       builder: (context, snapshot) {
@@ -65,16 +66,20 @@ class UserFuture extends StatelessWidget {
     return FutureBuilder<User>(
       future: app.fetchUser(userId),
       builder: (context, snapshot) {
+        print("builder");
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data != null) {
+          print("done");
+          if (snapshot.data != null && snapshot.data.communeID != "") {
+            print("got ID");
             //user ok
             return CommuneFuture(
               app: app,
               comId: snapshot.data.communeID,
             );
           } else {
+            print("penis");
             //no user
-            return Error();
+            return JoinScreen();
           }
         }
         return Loading();
