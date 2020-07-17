@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commune.dart';
+import 'commune.dart';
 import 'user.dart';
 
 class AppState with ChangeNotifier {
@@ -25,10 +26,13 @@ class AppState with ChangeNotifier {
   });
 
   bool get isLoaded {
-    return (user != null && commune != null && auth.accessToken != null && auth.atExp.isAfter(DateTime.now()));
+    return (user != null &&
+        commune != null &&
+        auth.accessToken != null &&
+        auth.atExp.isAfter(DateTime.now()));
   }
 
-  bool get hasCommune{
+  bool get hasCommune {
     return this.user == null || this.user.communeID != "";
   }
 
@@ -99,13 +103,13 @@ class AppState with ChangeNotifier {
     }
   }
 
-  Future<void> loadApp(BuildContext ctx) async {
+  Future<Auth> loadApp(BuildContext ctx) async {
     print("load App");
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!prefs.containsKey('authData')) {
         print("no authData");
-        return;
+        return null;
       }
 
       final prefsData =
@@ -114,10 +118,10 @@ class AppState with ChangeNotifier {
         userID: prefsData['userID'],
         accessToken: prefsData['accessToken'],
         refreshToken: prefsData['refreshToken'],
-        atExp:
-            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['atExp']) * 1000),
-        rtExp:
-            DateTime.fromMillisecondsSinceEpoch(int.parse(prefsData['rtExp']) * 1000),
+        atExp: DateTime.fromMillisecondsSinceEpoch(
+            int.parse(prefsData['atExp']) * 1000),
+        rtExp: DateTime.fromMillisecondsSinceEpoch(
+            int.parse(prefsData['rtExp']) * 1000),
       );
 
       if (!auth.atExp.isAfter(DateTime.now())) {
@@ -127,16 +131,18 @@ class AppState with ChangeNotifier {
 
       if (!auth.rtExp.isAfter(DateTime.now())) {
         print("refresh Refresh");
-        return;
+        return null;
       }
-      await initApp();
+      return auth;
     } catch (err) {
-      print(err);
-      throw (err);
+      return null;
     }
   }
 
-  Future<void> fetchCommune(String comID) async {
+  Future<Commune> fetchCommune(String comID) async {
+    if (comID == null) {
+      return null;
+    }
     final body = '''{
         "uid": "$comID"
       }''';
@@ -170,14 +176,13 @@ class AppState with ChangeNotifier {
         members: getMembers(data['members']),
       );
       notifyListeners();
+      return commune;
     } catch (err) {
-      commune = null;
-      notifyListeners();
-      throw (err);
+      return null;
     }
   }
 
-  Future<void> fetchUser(String userID) async {
+  Future<User> fetchUser(String userID) async {
     final body = '''{
         "uid": "$userID"
       }''';
@@ -192,8 +197,9 @@ class AppState with ChangeNotifier {
           communeID: data['commune']);
       print(data);
       notifyListeners();
+      return user;
     } catch (err) {
-      throw (err);
+      return null;
     }
   }
 }
