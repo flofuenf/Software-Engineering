@@ -17,11 +17,8 @@ import 'screens/edit_consumable_screen.dart';
 import 'screens/commune_overview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/app_state.dart';
-import 'screens/dashboard.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/register_screen.dart';
-import 'screens/login/welcome_screen.dart';
 import 'screens/login/welcome_screen.dart';
 
 void main() {
@@ -66,18 +63,14 @@ class UserFuture extends StatelessWidget {
     return FutureBuilder<User>(
       future: app.fetchUser(userId),
       builder: (context, snapshot) {
-        print("builder");
         if (snapshot.connectionState == ConnectionState.done) {
-          print("done");
           if (snapshot.data != null && snapshot.data.communeID != "") {
-            print("got ID");
             //user ok
             return CommuneFuture(
               app: app,
               comId: snapshot.data.communeID,
             );
           } else {
-            print("penis");
             //no user
             return JoinScreen();
           }
