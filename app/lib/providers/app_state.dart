@@ -44,6 +44,26 @@ class AppState with ChangeNotifier {
     return this.commune.members;
   }
 
+  Future<void> register(Map<String, String> input) async{
+    print("register here");
+    final body = '''{
+      "mail": \"${input['mail']}\",
+      "pass": \"${input['pass']}\",
+      "name": \"${input['name']}\",
+      "birth": ${int.parse(input['birth'])/1000}
+    }''';
+
+    try{
+      final res = await GraphHelper.authPost(body, "register");
+      print("res");
+      if(res['uid'] == null){
+        throw("Something went wrong");
+      }
+    }catch(err){
+      throw(err);
+    }
+  }
+
   Future<void> login(Map<String, String> input) async {
     auth = Auth();
     final body = '''{
@@ -52,7 +72,7 @@ class AppState with ChangeNotifier {
     }''';
 
     try {
-      final res = await GraphHelper.authPost(body);
+      final res = await GraphHelper.authPost(body, "login");
       auth.accessToken = "Bearer ${res['access_token']}";
       auth.refreshToken = res['refresh_token'];
       auth.userID = "${res['user_id']}";

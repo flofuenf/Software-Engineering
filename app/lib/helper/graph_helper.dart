@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 const address = "http://localhost:8000";
 
 class GraphHelper {
-  static Future<Map<dynamic, dynamic>> authPost(String body) async {
-    final url = "$address/login";
+  static Future<Map<dynamic, dynamic>> authPost(String body, String urlSegment) async {
+    final url = "$address/$urlSegment";
     try {
       final request = new http.Request("POST", Uri.parse(url));
       request.body = body;
