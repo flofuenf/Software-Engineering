@@ -22,6 +22,47 @@ class Consumables with ChangeNotifier {
     return items.indexWhere((duty) => duty.uid == uid);
   }
 
+  Future<void> createConsumable(Consumable con, String comID) async {
+    String buildRotationJSON(List<Member> list) {
+      StringBuffer sb = StringBuffer();
+      for (int i = 0; i < list.length; i++) {
+        sb.write('''
+        {
+          "uid": "${list[i].uid}"
+        }
+        ''');
+        if (i + 1 < list.length) {
+          sb.write(",");
+        }
+      }
+
+      return sb.toString();
+    }
+      try {
+        final body = '''
+        {
+          "uid": "$comID",
+          "consumables": [
+            {
+              "name": "${con.name}",
+              "rotationList": [
+                ${buildRotationJSON(con.rotationList)}
+              ]
+            }
+          ]  
+         }
+        ''';
+        var response = await GraphHelper.postSecure(body, "api/consumable", auth.accessToken);
+        if (response != "") {
+          con.uid = response;
+          items.add(con);
+          fetchConsumables(comID);
+        }
+      } catch (err) {
+        throw (err);
+      }
+  }
+
   Future<void> updateConsumable(Consumable con, String comID) async {
     final index = items.indexWhere((item) => item.uid == con.uid);
 
@@ -129,10 +170,8 @@ class Consumables with ChangeNotifier {
         items = loadedConsumables;
         notifyListeners();
       }
-      notifyListeners();
     } catch (err) {
       items = [];
-      notifyListeners();
       throw (err);
     }
   }

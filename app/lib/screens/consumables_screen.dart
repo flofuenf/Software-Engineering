@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 
 class ConsumablesScreen extends StatefulWidget {
   static const routeName = "/consumables";
-
   @override
   _ConsumablesScreenState createState() => _ConsumablesScreenState();
 }
@@ -47,7 +46,6 @@ class _ConsumablesScreenState extends State<ConsumablesScreen> {
   @override
   Widget build(BuildContext context) {
     var consumables = Provider.of<Consumables>(context);
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Gegenstände"),

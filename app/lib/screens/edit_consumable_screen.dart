@@ -17,6 +17,7 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
   final _nameController = TextEditingController();
   bool _isInit = true;
   bool _isLoading = false;
+  bool update = true;
   Consumable consumable;
   final _form = GlobalKey<FormState>();
   List<Member> members = [];
@@ -61,6 +62,7 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
       this.consumable = ModalRoute.of(context).settings.arguments as Consumable;
       this.members = Provider.of<AppState>(context, listen: false).members;
       if (consumable == null) {
+        update = false;
         consumable = Consumable();
       }
       _nameController.text = consumable.name;
@@ -87,13 +89,21 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
       _isLoading = true;
     });
 
-    try {
-      await Provider.of<Consumables>(context, listen: false)
-          .updateConsumable(consumable, Provider.of<AppState>(context).commune.uid);
-    } catch (err) {
-      throw (err);
+    if(update){
+      try {
+        await Provider.of<Consumables>(context, listen: false)
+            .updateConsumable(consumable, Provider.of<AppState>(context).commune.uid);
+      } catch (err) {
+        throw (err);
+      }
+    }else{
+      try {
+        await Provider.of<Consumables>(context, listen: false)
+            .createConsumable(consumable, Provider.of<AppState>(context).commune.uid);
+      } catch (err) {
+        throw (err);
+      }
     }
-
     Navigator.of(context).pop();
   }
 
@@ -101,7 +111,7 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Putzdienst ändern"),
+        title: Text("Gegenstand bearbeiten"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),

@@ -60,7 +60,13 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
 
 // JoinCommuneByID sets the Commune for a User
 func (s *DGraph) JoinCommuneByID(comID string, usrID string) error {
-	err := s.mutateSinglePred(comID, "members", usrID)
+	log.Println(comID)
+	log.Println(usrID)
+	err := s.mutateSinglePredString(usrID, "commune", comID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	err = s.mutateSinglePred(comID, "members", usrID)
 	return errors.WithStack(err)
 }
 

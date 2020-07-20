@@ -90,6 +90,21 @@ func (s *DGraph) mutateSinglePred(uid, pred, obj string) error {
 	return errors.WithStack(err)
 }
 
+func (s *DGraph) mutateSinglePredString(uid, pred, obj string) error {
+	req := s.client.NewTxn()
+
+	mu := &api.Mutation{
+		SetJson:   []byte(fmt.Sprintf(`[{"uid": "%s", "%s": "%s"}]`, uid, pred, obj)),
+		CommitNow: true,
+	}
+
+	_, err := req.Mutate(s.ctx, mu)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return errors.WithStack(err)
+}
+
 func (s *DGraph) deleteObjectDB(uid, pred, obj string) error {
 	req := s.client.NewTxn()
 

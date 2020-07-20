@@ -155,7 +155,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Putzdienst ändern"),
+        title: Text("Putzdienst bearbeiten"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),

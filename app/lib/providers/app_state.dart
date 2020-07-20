@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:CommuneIsm/models/member.dart';
 import 'package:CommuneIsm/providers/auth.dart';
-import 'package:CommuneIsm/screens/login/join_screen.dart';
 
 import '../models/address.dart';
 
@@ -10,7 +9,6 @@ import '../helper/graph_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'commune.dart';
 import 'commune.dart';
 import 'user.dart';
 
@@ -44,6 +42,24 @@ class AppState with ChangeNotifier {
     return this.commune.members;
   }
 
+  Future<bool> join(Map<String, String> input) async{
+    final body = '''{
+      "uid": \"${input['comID']}\",
+      "members": [
+          {
+            "uid": \"${input['userID']}\"  
+          }
+       ]
+    }''';
+
+    try{
+      await GraphHelper.postSecure(body, "api/joinCommune", auth.accessToken);
+      return true;
+    }catch(err){
+      throw(err);
+    }
+  }
+
   Future<void> register(Map<String, String> input) async{
     print("register here");
     final body = '''{
@@ -73,6 +89,10 @@ class AppState with ChangeNotifier {
 
     try {
       final res = await GraphHelper.authPost(body, "login");
+      if(res['success'] == false){
+        throw("E-Mail oder Passwort falsch");
+      }
+
       auth.accessToken = "Bearer ${res['access_token']}";
       auth.refreshToken = res['refresh_token'];
       auth.userID = "${res['user_id']}";
@@ -94,10 +114,12 @@ class AppState with ChangeNotifier {
           prefs.setString('authData', authData);
           notifyListeners();
         } catch (err) {
+          print("prefs data");
           throw (err);
         }
       }
     } catch (err) {
+      print("error Here catch login");
       throw (err);
     }
   }
@@ -161,8 +183,14 @@ class AppState with ChangeNotifier {
 
   Future<Commune> fetchCommune(String comID) async {
     if (comID == null) {
+      print("comID null");
       return null;
     }
+    if (commune != null){
+      print("com not null");
+      return commune;
+    }
+    print("get commune");
     final body = '''{
         "uid": "$comID"
       }''';
@@ -181,6 +209,7 @@ class AppState with ChangeNotifier {
     }
 
     try {
+      print("try");
       var data = await GraphHelper.postSecure(
           body, "api/communeGet", auth.accessToken);
       commune = Commune(
@@ -195,8 +224,10 @@ class AppState with ChangeNotifier {
         ),
         members: getMembers(data['members']),
       );
+      print("return");
       return commune;
     } catch (err) {
+      print("catch");
       return null;
     }
   }

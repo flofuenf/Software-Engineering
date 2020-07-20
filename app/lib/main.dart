@@ -38,14 +38,17 @@ class CommuneFuture extends StatelessWidget {
       future: app.fetchCommune(comId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          print("done");
           if (snapshot.data != null) {
             //commune ok
-            return Dashboard();
+              return Dashboard();
           } else {
+            print("no commune, error");
             //no commune
             return Error();
           }
         }
+        print("not done");
         return Loading();
       },
     );
@@ -75,6 +78,7 @@ class UserFuture extends StatelessWidget {
             return JoinScreen();
           }
         }
+        print("loading User Future");
         return Loading();
       },
     );
@@ -117,6 +121,7 @@ class AuthFuture extends StatelessWidget {
             return WelcomeScreen();
           }
         } else {
+          print("loading Auth Future");
           return Loading();
         }
       },
