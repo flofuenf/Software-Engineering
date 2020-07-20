@@ -24,7 +24,6 @@ class Auth with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!prefs.containsKey('authData')) {
-        print("no authData");
         return;
       }
 

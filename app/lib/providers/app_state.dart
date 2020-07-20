@@ -49,7 +49,6 @@ class AppState with ChangeNotifier {
 
   Future<void> initApp() async {
     if (auth == null || !auth.isAuth()) {
-      print("auth");
       try {
         await autoLogin();
       } catch (err) {
@@ -61,9 +60,7 @@ class AppState with ChangeNotifier {
       return;
     }
     if (user == null) {
-      print("user");
       try {
-        print("try userID");
         print(auth.userID);
         await fetchUser(auth.userID);
       } catch (err) {
@@ -73,7 +70,6 @@ class AppState with ChangeNotifier {
     }
 
     if (user.communeID == null || user.communeID.length < 1) {
-      print("no commune");
       return;
     }
 
@@ -112,7 +108,6 @@ class AppState with ChangeNotifier {
       if (!auth.rtExp.isAfter(DateTime.now())) {
         print("refresh Refresh");
       }
-      print("auth finish");
       notifyListeners();
     } catch (err) {
       print(err);
@@ -258,7 +253,6 @@ class AppState with ChangeNotifier {
 
     try {
       final res = await GraphHelper.authPost(body, "register");
-      print("res");
       if (res['uid'] == null) {
         throw ("Something went wrong");
       }

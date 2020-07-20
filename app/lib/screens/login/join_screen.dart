@@ -52,7 +52,6 @@ class JoinScreen extends StatelessWidget {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          print("create Commune");
                         },
                         child: Text("WG erstellen"),
                       ),
@@ -87,12 +86,9 @@ class _InviteFormState extends State<InviteForm> {
   };
 
   void _submitID() async {
-    print("submit");
     if (!_inviteFormKey.currentState.validate()) {
-      print("validate false");
       return;
     }
-    print("save Form");
     _inviteFormKey.currentState.save();
     setState(() {
       _isLoading = true;

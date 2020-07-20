@@ -80,12 +80,9 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _submit() async {
-    print("submit");
     if (!_regFormKey.currentState.validate()) {
-      print("validate false");
       return;
     }
-    print("save Form");
     _regFormKey.currentState.save();
     setState(() {
       _isLoading = true;
@@ -251,9 +248,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     fontSize: 15,
                   ),
                   validator: (value) {
-                    print("validate date");
                     if (value.isEmpty || value.length < 1) {
-                      print("val false");
                       return "Bitte wähle ein Geburtsdatum aus";
                     }
                     return null;
