@@ -119,6 +119,7 @@ class Consumables with ChangeNotifier {
           rotMember.add(Member(
             uid: mem['uid'],
             name: mem['name'],
+            commune: mem['commune'],
           ));
         });
         items[indexById(data['uid'])] = Consumable(
@@ -153,6 +154,7 @@ class Consumables with ChangeNotifier {
             rotMember.add(Member(
               uid: mem['uid'],
               name: mem['name'],
+              commune: mem['commune'],
             ));
           });
           loadedConsumables.add(Consumable(

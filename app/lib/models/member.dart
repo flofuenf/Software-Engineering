@@ -5,11 +5,13 @@ class Member{
   final String name;
   final DateTime created;
   final DateTime birth;
+  final String commune;
 
   Member({
     @required this.uid,
     @required this.name,
     this.created,
     this.birth,
+    this.commune,
   });
 }

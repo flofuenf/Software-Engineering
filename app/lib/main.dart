@@ -8,7 +8,6 @@ import 'package:CommuneIsm/screens/login/welcome_screen.dart';
 
 import 'providers/app_state.dart';
 import 'providers/commune.dart';
-import 'providers/user.dart';
 import 'screens/consumables_screen.dart';
 import 'screens/dashboard.dart';
 import 'screens/debug.dart';
@@ -23,110 +22,6 @@ import 'screens/login/welcome_screen.dart';
 
 void main() {
   runApp(MyApp());
-}
-
-class CommuneFuture extends StatelessWidget {
-  final AppState app;
-  final String comId;
-
-  const CommuneFuture({Key key, this.app, this.comId}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    print("com future");
-    return FutureBuilder<Commune>(
-      future: app.fetchCommune(comId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          print("done");
-          if (snapshot.data != null) {
-            //commune ok
-              return Dashboard();
-          } else {
-            print("no commune, error");
-            //no commune
-            return Error();
-          }
-        }
-        print("not done");
-        return Loading();
-      },
-    );
-  }
-}
-
-class UserFuture extends StatelessWidget {
-  final String userId;
-  final AppState app;
-
-  const UserFuture({Key key, this.userId, this.app}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<User>(
-      future: app.fetchUser(userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data != null && snapshot.data.communeID != "") {
-            //user ok
-            return CommuneFuture(
-              app: app,
-              comId: snapshot.data.communeID,
-            );
-          } else {
-            //no user
-            return JoinScreen();
-          }
-        }
-        print("loading User Future");
-        return Loading();
-      },
-    );
-  }
-}
-
-class Loading extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
-  }
-}
-
-class Error extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Internal Error"));
-  }
-}
-
-class AuthFuture extends StatelessWidget {
-  final AppState app;
-
-  const AuthFuture({Key key, this.app}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Auth>(
-      future: app.loadApp(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data != null) {
-            //auth ok
-            return UserFuture(
-              app: app,
-              userId: snapshot.data.userID,
-            );
-          } else {
-            //no auth
-            return WelcomeScreen();
-          }
-        } else {
-          print("loading Auth Future");
-          return Loading();
-        }
-      },
-    );
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -163,7 +58,16 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.grey,
             accentColor: Colors.deepOrange,
           ),
-          home: AuthFuture(app: app),
+          home: app.isLoaded
+              ? Dashboard()
+              : FutureBuilder(
+                  future: app.initApp(),
+                  builder: (ctx, appResultSnapshot) =>
+                      appResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? CircularProgressIndicator()
+                          : WelcomeScreen(),
+                ),
           routes: {
             DebugScreen.routeName: (ctx) => DebugScreen(),
             CommuneOverview.routeName: (ctx) =>

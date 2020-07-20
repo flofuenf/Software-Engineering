@@ -106,7 +106,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       return;
     }
 
-    if(duty.rotationList.length < 1){
+    if (duty.rotationList.length < 1) {
       await showPopUp("Error", "Bitte wähle mindestens ein WG-Mitglied aus");
       return;
     }
@@ -116,7 +116,7 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
     duty.description = _descriptionController.text;
     duty.nextDone = _selectedDate;
 
-    if(duty.nextDone == null){
+    if (duty.nextDone == null) {
       await showPopUp("Error", "Bitte wähle ein Datum aus...");
       return;
     }
@@ -126,18 +126,26 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       _isLoading = true;
     });
 
-    if(update){
-      try{
+    if (update) {
+      try {
         await Provider.of<Duties>(context, listen: false).updateDuty(duty);
-      }catch(err){
-        throw(err);
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (err) {
+        throw (err);
       }
-    }else{
-      try{
-        String comID = Provider.of<AppState>(context, listen: false).commune.uid;
-        await Provider.of<Duties>(context, listen: false).createDuty(duty, comID);
-      }catch(err){
-        throw(err);
+    } else {
+      try {
+        String comID =
+            Provider.of<AppState>(context, listen: false).commune.uid;
+        await Provider.of<Duties>(context, listen: false)
+            .createDuty(duty, comID);
+        setState(() {
+          _isLoading = false;
+        });
+      } catch (err) {
+        throw (err);
       }
     }
     Navigator.of(context).pop();
@@ -165,119 +173,125 @@ class _EditDutyScreenState extends State<EditDutyScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _form,
-          child: ListView(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextFormField(
-                      focusNode: _nameFocusNode,
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: "Name",
-                      ),
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode);
-                      },
-                      validator: (val) {
-                        if (val.isEmpty) {
-                          return 'Please provide a value.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    child: TextFormField(
-                      focusNode: _descriptionFocusNode,
-                      controller: _descriptionController,
-                      decoration: InputDecoration(
-                        labelText: "Beschreibung",
-                      ),
-                      maxLines: 3,
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_dateFocusNode);
-                      },
-                      validator: (val) {
-                        if (val.isEmpty) {
-                          return 'Please provide a value.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text(_selectedDate == null
-                          ? 'Start-Datum wählen'
-                          : f.format(_selectedDate)),
-                      RaisedButton(
-                        focusNode: _dateFocusNode,
-                        child: Text("Pick a date"),
-                        onPressed: () {
-                          showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate:
-                                DateTime.now().subtract(Duration(days: 10)),
-                            lastDate: DateTime.now().add(Duration(days: 30)),
-                          ).then((date) {
-                            setState(() {
-                              _selectedDate = date;
-                            });
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Flexible(
-                    child: DropdownButton(
-                      value: _selectedRotation,
-                      items: _rotationList,
-                      onChanged: changeRotation,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: members
-                    .map((e) => CheckboxListTile(
-                          title: Text(e.name),
-                          value: checkOnMember(e),
-                          onChanged: (bool val) {
-                            setState(() {
-                              if (val) {
-                                duty.rotationList.add(e);
-                              } else {
-                                duty.rotationList
-                                    .removeWhere((item) => item.uid == e.uid);
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Form(
+                key: _form,
+                child: ListView(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: TextFormField(
+                            focusNode: _nameFocusNode,
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: "Name",
+                            ),
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) {
+                              FocusScope.of(context)
+                                  .requestFocus(_descriptionFocusNode);
+                            },
+                            validator: (val) {
+                              if (val.isEmpty) {
+                                return 'Please provide a value.';
                               }
-                            });
-                          },
-                        ))
-                    .toList(),
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: TextFormField(
+                            focusNode: _descriptionFocusNode,
+                            controller: _descriptionController,
+                            decoration: InputDecoration(
+                              labelText: "Beschreibung",
+                            ),
+                            maxLines: 3,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) {
+                              FocusScope.of(context)
+                                  .requestFocus(_dateFocusNode);
+                            },
+                            validator: (val) {
+                              if (val.isEmpty) {
+                                return 'Please provide a value.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(_selectedDate == null
+                                ? 'Start-Datum wählen'
+                                : f.format(_selectedDate)),
+                            RaisedButton(
+                              focusNode: _dateFocusNode,
+                              child: Text("Pick a date"),
+                              onPressed: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now()
+                                      .subtract(Duration(days: 10)),
+                                  lastDate:
+                                      DateTime.now().add(Duration(days: 30)),
+                                ).then((date) {
+                                  setState(() {
+                                    _selectedDate = date;
+                                  });
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Flexible(
+                          child: DropdownButton(
+                            value: _selectedRotation,
+                            items: _rotationList,
+                            onChanged: changeRotation,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: members
+                          .map((e) => CheckboxListTile(
+                                title: Text(e.name),
+                                value: checkOnMember(e),
+                                onChanged: (bool val) {
+                                  setState(() {
+                                    if (val) {
+                                      duty.rotationList.add(e);
+                                    } else {
+                                      duty.rotationList.removeWhere(
+                                          (item) => item.uid == e.uid);
+                                    }
+                                  });
+                                },
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

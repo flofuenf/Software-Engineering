@@ -14,7 +14,7 @@ func (s *Server) receiveDuty(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-
+	log.Println(com)
 	err = s.graph.InsertDuty(&com.Duties[0])
 	if err != nil {
 		log.Println(err)

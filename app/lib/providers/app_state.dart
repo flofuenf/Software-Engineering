@@ -24,10 +24,15 @@ class AppState with ChangeNotifier {
   });
 
   bool get isLoaded {
-    return (user != null &&
+    print(user != null &&
         commune != null &&
         auth.accessToken != null &&
         auth.atExp.isAfter(DateTime.now()));
+    return (user != null && commune != null && auth.isAuth());
+  }
+
+  bool get isAuth {
+    return auth.isAuth();
   }
 
   bool get hasCommune {
@@ -42,118 +47,51 @@ class AppState with ChangeNotifier {
     return this.commune.members;
   }
 
-  Future<bool> join(Map<String, String> input) async{
-    final body = '''{
-      "uid": \"${input['comID']}\",
-      "members": [
-          {
-            "uid": \"${input['userID']}\"  
-          }
-       ]
-    }''';
-
-    try{
-      await GraphHelper.postSecure(body, "api/joinCommune", auth.accessToken);
-      return true;
-    }catch(err){
-      throw(err);
-    }
-  }
-
-  Future<void> register(Map<String, String> input) async{
-    print("register here");
-    final body = '''{
-      "mail": \"${input['mail']}\",
-      "pass": \"${input['pass']}\",
-      "name": \"${input['name']}\",
-      "birth": ${int.parse(input['birth'])/1000}
-    }''';
-
-    try{
-      final res = await GraphHelper.authPost(body, "register");
-      print("res");
-      if(res['uid'] == null){
-        throw("Something went wrong");
-      }
-    }catch(err){
-      throw(err);
-    }
-  }
-
-  Future<void> login(Map<String, String> input) async {
-    auth = Auth();
-    final body = '''{
-      "mail": \"${input['mail']}\",
-      "pass": \"${input['pw']}\"
-    }''';
-
-    try {
-      final res = await GraphHelper.authPost(body, "login");
-      if(res['success'] == false){
-        throw("E-Mail oder Passwort falsch");
-      }
-
-      auth.accessToken = "Bearer ${res['access_token']}";
-      auth.refreshToken = res['refresh_token'];
-      auth.userID = "${res['user_id']}";
-      auth.atExp = DateTime.fromMillisecondsSinceEpoch(res['atExp'] * 1000);
-      auth.rtExp = DateTime.fromMicrosecondsSinceEpoch(res['rtExp'] * 1000);
-
-      if (auth.accessToken != null &&
-          auth.refreshToken != null &&
-          auth.userID != null) {
-        try {
-          final prefs = await SharedPreferences.getInstance();
-          final authData = json.encode({
-            'accessToken': auth.accessToken,
-            'refreshToken': auth.refreshToken,
-            'userID': auth.userID,
-            "atExp": auth.atExp.millisecondsSinceEpoch.toString(),
-            "rtExp": auth.rtExp.millisecondsSinceEpoch.toString(),
-          });
-          prefs.setString('authData', authData);
-          notifyListeners();
-        } catch (err) {
-          print("prefs data");
-          throw (err);
-        }
-      }
-    } catch (err) {
-      print("error Here catch login");
-      throw (err);
-    }
-  }
-
   Future<void> initApp() async {
-    try {
-      await fetchUser(auth.userID);
-    } catch (err) {
-      throw (err);
+    if (auth == null || !auth.isAuth()) {
+      print("auth");
+      try {
+        await autoLogin();
+      } catch (err) {
+        print(err);
+        throw (err);
+      }
+    }
+    if (auth == null || !auth.isAuth()) {
+      return;
+    }
+    if (user == null) {
+      print("user");
+      try {
+        print("try userID");
+        print(auth.userID);
+        await fetchUser(auth.userID);
+      } catch (err) {
+        print(err);
+        throw (err);
+      }
     }
 
-    if (user.communeID == "") {
-      print("no Commune for User");
+    if (user.communeID == null || user.communeID.length < 1) {
+      print("no commune");
       return;
-      //go to Commune Selection / Invitation
     }
 
     try {
       await fetchCommune(user.communeID);
-      print(user.communeID);
     } catch (err) {
+      print(err);
       throw (err);
     }
   }
 
-  Future<Auth> loadApp(BuildContext ctx) async {
-    print("load App");
+  Future<void> autoLogin() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!prefs.containsKey('authData')) {
         print("no authData");
-        return null;
+        return;
       }
-
       final prefsData =
           json.decode(prefs.getString('authData')) as Map<String, Object>;
       auth = Auth(
@@ -173,24 +111,37 @@ class AppState with ChangeNotifier {
 
       if (!auth.rtExp.isAfter(DateTime.now())) {
         print("refresh Refresh");
-        return null;
       }
-      return auth;
+      print("auth finish");
+      notifyListeners();
     } catch (err) {
-      return null;
+      print(err);
+      throw (err);
     }
   }
 
-  Future<Commune> fetchCommune(String comID) async {
-    if (comID == null) {
-      print("comID null");
-      return null;
+  Future<void> fetchUser(String userID) async {
+    final body = '''{
+        "uid": "$userID"
+      }''';
+
+    try {
+      var data =
+          await GraphHelper.postSecure(body, "api/userGet", auth.accessToken);
+      user = User(
+          uid: data['uid'],
+          name: data['name'],
+          birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
+          communeID: data['commune']);
+    } catch (err) {
+      print(err);
+      throw (err);
     }
-    if (commune != null){
-      print("com not null");
-      return commune;
-    }
+  }
+
+  Future<void> fetchCommune(String comID) async {
     print("get commune");
+    print(comID);
     final body = '''{
         "uid": "$comID"
       }''';
@@ -201,6 +152,7 @@ class AppState with ChangeNotifier {
         members.add(Member(
           uid: mem['uid'],
           name: mem['name'],
+          commune: mem['commune'],
           created: DateTime.fromMillisecondsSinceEpoch(mem['created'] * 1000),
           birth: DateTime.fromMillisecondsSinceEpoch(mem['birth'] * 1000),
         ));
@@ -224,31 +176,94 @@ class AppState with ChangeNotifier {
         ),
         members: getMembers(data['members']),
       );
-      print("return");
-      return commune;
+      notifyListeners();
     } catch (err) {
-      print("catch");
+      print(err);
       return null;
     }
   }
 
-  Future<User> fetchUser(String userID) async {
+  Future<void> login(Map<String, String> input) async {
+    auth = Auth();
     final body = '''{
-        "uid": "$userID"
-      }''';
+      "mail": \"${input['mail']}\",
+      "pass": \"${input['pw']}\"
+    }''';
 
     try {
-      var data =
-          await GraphHelper.postSecure(body, "api/userGet", auth.accessToken);
-      user = User(
-          uid: data['uid'],
-          name: data['name'],
-          birth: DateTime.fromMillisecondsSinceEpoch(data['birth'] * 1000),
-          communeID: data['commune']);
-      print(data);
-      return user;
+      final res = await GraphHelper.authPost(body, "login");
+      if (res['success'] == false) {
+        throw ("E-Mail oder Passwort falsch");
+      }
+
+      auth.accessToken = "Bearer ${res['access_token']}";
+      auth.refreshToken = res['refresh_token'];
+      auth.userID = "${res['user_id']}";
+      auth.atExp = DateTime.fromMillisecondsSinceEpoch(res['atExp'] * 1000);
+      auth.rtExp = DateTime.fromMicrosecondsSinceEpoch(res['rtExp'] * 1000);
+
+      if (auth.accessToken != null &&
+          auth.refreshToken != null &&
+          auth.userID != null) {
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          final authData = json.encode({
+            'accessToken': auth.accessToken,
+            'refreshToken': auth.refreshToken,
+            'userID': auth.userID,
+            "atExp": auth.atExp.millisecondsSinceEpoch.toString(),
+            "rtExp": auth.rtExp.millisecondsSinceEpoch.toString(),
+          });
+          prefs.setString('authData', authData);
+          notifyListeners();
+        } catch (err) {
+          print(err);
+          throw (err);
+        }
+      }
     } catch (err) {
-      return null;
+      print(err);
+      throw (err);
+    }
+  }
+
+  Future<void> join(Map<String, String> input) async {
+    print("join");
+    final body = '''{
+      "uid": \"${input['comID']}\",
+      "members": [
+          {
+            "uid": \"${input['userID']}\"  
+          }
+       ]
+    }''';
+
+    try {
+      await GraphHelper.postSecure(body, "api/joinCommune", auth.accessToken);
+      user.communeID = input['comID'];
+      notifyListeners();
+    } catch (err) {
+      throw (err);
+    }
+  }
+
+  Future<void> register(Map<String, String> input) async {
+    print("register here");
+    final body = '''{
+      "mail": \"${input['mail']}\",
+      "pass": \"${input['pass']}\",
+      "name": \"${input['name']}\",
+      "birth": ${int.parse(input['birth']) / 1000}
+    }''';
+
+    try {
+      final res = await GraphHelper.authPost(body, "register");
+      print("res");
+      if (res['uid'] == null) {
+        throw ("Something went wrong");
+      }
+    } catch (err) {
+      throw (err);
     }
   }
 }

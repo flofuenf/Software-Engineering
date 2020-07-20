@@ -89,17 +89,23 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
       _isLoading = true;
     });
 
-    if(update){
+    if (update) {
       try {
-        await Provider.of<Consumables>(context, listen: false)
-            .updateConsumable(consumable, Provider.of<AppState>(context).commune.uid);
+        await Provider.of<Consumables>(context, listen: false).updateConsumable(
+            consumable, Provider.of<AppState>(context).commune.uid);
+        setState(() {
+          _isLoading = false;
+        });
       } catch (err) {
         throw (err);
       }
-    }else{
+    } else {
       try {
-        await Provider.of<Consumables>(context, listen: false)
-            .createConsumable(consumable, Provider.of<AppState>(context).commune.uid);
+        await Provider.of<Consumables>(context, listen: false).createConsumable(
+            consumable, Provider.of<AppState>(context).commune.uid);
+        setState(() {
+          _isLoading = false;
+        });
       } catch (err) {
         throw (err);
       }
@@ -121,7 +127,7 @@ class _EditConsumableScreenState extends State<EditConsumableScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Form(
+        child: _isLoading ? Center(child: CircularProgressIndicator(),) : Form(
           key: _form,
           child: ListView(
             children: <Widget>[

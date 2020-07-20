@@ -1,5 +1,4 @@
 import 'package:CommuneIsm/providers/app_state.dart';
-import 'package:CommuneIsm/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,16 +7,7 @@ class JoinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("asdibasdsa");
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.blueGrey,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Center(
+    return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -72,8 +62,6 @@ class JoinScreen extends StatelessWidget {
               )
             ],
           ),
-        ),
-      ),
     );
   }
 }
@@ -111,14 +99,13 @@ class _InviteFormState extends State<InviteForm> {
     });
 
     _joinData['comID'] = _idController.text;
-    _joinData['userID'] = Provider.of<AppState>(context).auth.userID;
+    _joinData['userID'] = Provider.of<AppState>(context).user.uid;
 
     if(_joinData['comID'].length > 1 && _joinData['userID'].length > 1){
+      print(_joinData);
       try{
-        final success = await Provider.of<AppState>(context).join(_joinData);
-        if (success){
-          Navigator.of(context).pushReplacementNamed(Dashboard.routeName);
-        }
+        await Provider.of<AppState>(context, listen: false).join(_joinData);
+        Navigator.of(context).pop();
       }catch(err){
         showDialog(
           context: context,

@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:CommuneIsm/providers/auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 const address = "http://localhost:8000";
 

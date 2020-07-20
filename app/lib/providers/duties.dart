@@ -59,6 +59,7 @@ class Duties with ChangeNotifier {
           rotMember.add(Member(
             uid: mem['uid'],
             name: mem['name'],
+            commune: mem['commune'],
           ));
         });
         items[indexById(data['uid'])] = Duty(
@@ -167,8 +168,7 @@ class Duties with ChangeNotifier {
         ''';
       var response = await GraphHelper.postSecure(body, "api/duty", auth.accessToken);
       if (response != "") {
-        duty.uid = response;
-        items.add(duty);
+        print("got response");
         fetchDuties(comID);
       } else {
         throw ("Something went wrong (Creating Duty)");
@@ -187,11 +187,14 @@ class Duties with ChangeNotifier {
       if (data != null) {
         final List<Duty> loadedDuties = [];
         data.forEach((duty) {
+          print("duty");
           final List<Member> rotMember = [];
           duty['rotationList'].forEach((mem) {
+            print("member");
             rotMember.add(Member(
               uid: mem['uid'],
               name: mem['name'],
+              commune: mem['commune'],
             ));
           });
           loadedDuties.add(Duty(
