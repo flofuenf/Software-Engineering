@@ -10,7 +10,6 @@ import 'providers/app_state.dart';
 import 'providers/commune.dart';
 import 'screens/consumables_screen.dart';
 import 'screens/dashboard.dart';
-import 'screens/debug.dart';
 import 'screens/duties_screen.dart';
 import 'screens/edit_consumable_screen.dart';
 import 'screens/commune_overview_screen.dart';
@@ -69,7 +68,6 @@ class MyApp extends StatelessWidget {
                           : WelcomeScreen(),
                 ),
           routes: {
-            DebugScreen.routeName: (ctx) => DebugScreen(),
             CommuneOverview.routeName: (ctx) =>
                 app.isLoaded ? CommuneOverview() : CircularProgressIndicator(),
             DutyScreen.routeName: (ctx) =>

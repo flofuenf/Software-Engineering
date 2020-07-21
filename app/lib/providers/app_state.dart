@@ -249,4 +249,18 @@ class AppState with ChangeNotifier {
       throw (err);
     }
   }
+
+  Future<void> logout() async{
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('authData');
+    }catch(err){
+      print(err);
+      throw(err);
+    }
+    this.commune = null;
+    this.user = null;
+    this.auth = null;
+    notifyListeners();
+  }
 }

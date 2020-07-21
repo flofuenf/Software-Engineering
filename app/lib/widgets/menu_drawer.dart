@@ -1,4 +1,6 @@
+import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -89,18 +91,38 @@ class MenuDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(
-                    Icons.bug_report,
+                    Icons.exit_to_app,
                     color: Colors.white,
                   ),
                   title: Text(
-                    "Debug View",
+                    "Logout",
                     style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushReplacementNamed('/debug');
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text("Ausloggen"),
+                        content: Text("Bist du dir sicher, dass du dich abmelden möchtest?"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("Ja, sicher"),
+                            onPressed: () {
+                              Provider.of<AppState>(context, listen: false).logout();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("Nein"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ],
