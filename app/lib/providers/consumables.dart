@@ -22,6 +22,30 @@ class Consumables with ChangeNotifier {
     return items.indexWhere((duty) => duty.uid == uid);
   }
 
+  Future<void> deleteConsumable(String conID, String comID) async{
+    final body = '''{
+        "uid": "$comID",
+        "consumables": [
+          {
+            "uid": "$conID"
+          }
+         ]
+      }''';
+
+    try {
+      var response = await GraphHelper.postSecure(body, "api/consumableDelete", auth.accessToken);
+      if (response != ""){
+        items.removeAt(indexById(conID));
+        notifyListeners();
+      }
+      else{
+        throw("Delete failed :(");
+      }
+    }catch(err){
+      throw(err);
+    }
+  }
+
   Future<void> createConsumable(Consumable con, String comID) async {
     String buildRotationJSON(List<Member> list) {
       StringBuffer sb = StringBuffer();

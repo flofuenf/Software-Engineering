@@ -53,6 +53,7 @@ func (s *Server) registerSecureEndpoints() {
 	s.secure.POST("/communeGet", s.getCommune)
 	s.secure.POST("/commune", s.receiveCommune)
 	s.secure.POST("/joinCommune", s.joinCommune)
+	s.secure.POST("/leaveCommune", s.leaveCommune)
 
 	s.secure.POST("/userGet", s.getUser)
 
@@ -66,6 +67,7 @@ func (s *Server) registerSecureEndpoints() {
 	s.secure.POST("/consumableGet", s.getConsumables)
 	s.secure.POST("/consumableSwitch", s.switchConsumableBought)
 	s.secure.POST("/consumableSet", s.setConsumable)
+	s.secure.POST("/consumableDelete", s.deleteConsumable)
 }
 
 func corsMiddleware() gin.HandlerFunc {

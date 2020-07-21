@@ -1,4 +1,5 @@
 import 'package:CommuneIsm/models/consumable.dart';
+import 'package:CommuneIsm/providers/app_state.dart';
 import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,15 @@ class ConsumablesItem extends StatefulWidget {
 }
 
 class _ConsumablesItemState extends State<ConsumablesItem> {
+  void _deleteConsumable() async{
+    try{
+      String comID = Provider.of<AppState>(context, listen: false).commune.uid;
+      await Provider.of<Consumables>(context, listen: false).deleteConsumable(widget.consumable.uid, comID);
+    }catch(err){
+      print(err);
+    }
+  }
+
   void _switchStatus() async {
     try {
       await Provider.of<Consumables>(context, listen: false)
@@ -95,13 +105,48 @@ class _ConsumablesItemState extends State<ConsumablesItem> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        padding: EdgeInsets.all(0),
-                        iconSize: 20,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/consumableEdit', arguments: widget.consumable);
-                        }),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.edit),
+                            padding: EdgeInsets.all(0),
+                            iconSize: 20,
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/consumableEdit', arguments: widget.consumable);
+                            }),
+                        IconButton(
+                            icon: Icon(Icons.delete),
+                            padding: EdgeInsets.all(0),
+                            iconSize: 20,
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context){
+                                    return AlertDialog(
+                                      title: new Text("Gegenstand löschen"),
+                                      content:
+                                      new Text("Bist du dir sicher, dass du diesen Gegenstand löschen möchtest?"),
+                                      actions: <Widget>[
+                                        new FlatButton(
+                                          child: new Text("Sicher"),
+                                          onPressed: () {
+                                            _deleteConsumable();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        new FlatButton(
+                                          child: new Text("Lieber nicht..."),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  }
+                              );
+                            })
+                      ],
+                    ),
                     IconButton(
                         icon: widget.consumable.isNeeded ? Icon(Icons.hourglass_full) : Icon(Icons.new_releases),
                         padding: EdgeInsets.all(0),

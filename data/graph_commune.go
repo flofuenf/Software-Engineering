@@ -59,10 +59,111 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
 	return comWrap.Root[0], nil
 }
 
+// LeaveCommune lets a user leave a commune
+func (s *DGraph) LeaveCommune(com *Commune) error {
+	var (
+		err      error
+		userList []User
+	)
+	userGUID := com.Members[0].GUID
+	communeFromDB, err := s.FetchCommuneByID(com.GUID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	duties, _, err := s.FetchDutiesByID(com.GUID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	consumables, _, err := s.FetchConsumablesByID(com.GUID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if duties != nil {
+		for _, duty := range duties.([]Duty) {
+			update := false
+			userList = []User{}
+			for _, member := range duty.RotationList {
+				if member.GUID == userGUID {
+					update = true
+					continue
+				}
+				userList = append(userList, member)
+			}
+			if update {
+				if len(duty.RotationList) == 1 {
+					err = s.DeleteDuty(&Commune{GUID: com.GUID, Duties: []Duty{
+						duty,
+					}})
+					continue
+				}
+				duty.RotationList = userList
+				_, _, err = s.UpdateDuty(&duty)
+			}
+		}
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+
+	if consumables != nil {
+		userList = []User{}
+		for _, consumable := range consumables.([]Consumable) {
+			update := false
+			userList = []User{}
+			for _, member := range consumable.RotationList {
+				if member.GUID == userGUID {
+					update = true
+					continue
+				}
+				userList = append(userList, member)
+			}
+			if update {
+				if len(consumable.RotationList) == 1 {
+					err = s.DeleteConsumable(&Commune{GUID: com.GUID, Consumables: []Consumable{
+						consumable,
+					}})
+					continue
+				}
+				consumable.RotationList = userList
+				_, _, err = s.UpdateConsumable(&consumable)
+			}
+		}
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+
+	userList = []User{}
+	for _, member := range communeFromDB.(Commune).Members {
+		if member.GUID != userGUID {
+			userList = append(userList, member)
+		}
+	}
+
+	newCom := communeFromDB.(Commune)
+	newCom.Members = userList
+
+	err = s.deletePredicateDB(com.GUID, "members")
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	_, err = s.mutateDB(newCom)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	err = s.mutateSinglePredString(com.Members[0].GUID, "commune", "")
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return err
+}
+
 // JoinCommuneByID sets the Commune for a User
 func (s *DGraph) JoinCommuneByID(comID string, usrID string) error {
-	log.Println(comID)
-	log.Println(usrID)
 	err := s.mutateSinglePredString(usrID, "commune", comID)
 	if err != nil {
 		return errors.WithStack(err)

@@ -66,3 +66,17 @@ func (s *Server) setConsumable(c *gin.Context) {
 
 	lib.Jsonify(c, guid, count, err)
 }
+
+func (s *Server) deleteConsumable(c *gin.Context) {
+	var com data.Commune
+	err := c.BindJSON(&com)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = s.graph.DeleteConsumable(&com)
+	if err != nil {
+		com.Consumables[0].GUID = ""
+	}
+	lib.Jsonify(c, com.Consumables[0].GUID, 1, err)
+}

@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
                           : WelcomeScreen(),
                 ),
           routes: {
+            WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
             CommuneOverview.routeName: (ctx) =>
                 app.isLoaded ? CommuneOverview() : CircularProgressIndicator(),
             DutyScreen.routeName: (ctx) =>

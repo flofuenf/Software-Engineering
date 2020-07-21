@@ -40,13 +40,13 @@ func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 	duty.DGraphType = dutyType
 	duty.Changed = time.Now().Unix()
 	log.Println(duty.RotationList[0].Commune)
-	// err := s.deletePredicateDB(duty.GUID, "rotationList")
-	// if err == nil {
-	// 	_, err := s.mutateDB(duty)
-	// 	if err != nil {
-	// 		return "", 0, errors.WithStack(err)
-	// 	}
-	// }
+	err := s.deletePredicateDB(duty.GUID, "rotationList")
+	if err == nil {
+		_, err := s.mutateDB(duty)
+		if err != nil {
+			return "", 0, errors.WithStack(err)
+		}
+	}
 	return duty.GUID, 1, nil
 }
 

@@ -263,4 +263,24 @@ class AppState with ChangeNotifier {
     this.auth = null;
     notifyListeners();
   }
+
+  Future<void> leaveCommune() async{
+    final body = '''{
+      "uid": \"${commune.uid}\",
+      "members": [
+          {
+            "uid": \"${user.uid}\"  
+          }
+       ]
+    }''';
+    try{
+      final _ = await GraphHelper.postSecure(body, "api/leaveCommune", auth.accessToken);
+      this.commune = null;
+      this.user.communeID = null;
+      notifyListeners();
+    }catch(err){
+      print(err);
+      throw(err);
+    }
+  }
 }

@@ -135,3 +135,16 @@ func (s *DGraph) UpdateConsumable(con *Consumable) (string, int, error) {
 	}
 	return con.GUID, 1, err
 }
+
+// DeleteConsumable deletes one Duty by GUID
+func (s *DGraph) DeleteConsumable(com *Commune) error {
+	err := s.deletePredicateDB(com.Consumables[0].GUID, "rotationList")
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	err = s.deleteObjectDB(com.GUID, "consumables", com.Consumables[0].GUID)
+	if err == nil {
+		err = s.deleteEdgeDB(com.Consumables[0].GUID)
+	}
+	return errors.WithStack(err)
+}

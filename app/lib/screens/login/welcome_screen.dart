@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
+  static const routeName = ("/welcome");
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);

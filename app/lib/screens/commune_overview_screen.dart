@@ -1,15 +1,30 @@
 import 'package:CommuneIsm/providers/app_state.dart';
+import 'package:CommuneIsm/screens/login/welcome_screen.dart';
 import 'package:CommuneIsm/widgets/menu_drawer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CommuneOverview extends StatelessWidget {
   static const routeName = "/overview";
 
   @override
   Widget build(BuildContext context) {
+    void _toClipboard(String str) async {
+      await Clipboard.setData(ClipboardData(text: str));
+      Navigator.of(context).pop();
+    }
+
+    void _leave() async{
+      await Provider.of<AppState>(context).leaveCommune();
+      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Commune"),
@@ -104,29 +119,32 @@ class CommuneOverview extends StatelessWidget {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text("Einladungslink"),
-                                content: Text(
-                                    "Lade deine Freunde in die WG ein!"),
+                                content:
+                                    Text("Lade deine Freunde in die WG ein!"),
                                 actions: <Widget>[
-                                  IconButton(
-                                    icon: FaIcon(FontAwesomeIcons.whatsapp),
-                                    onPressed: () {
-                                      FlutterShareMe()
-                                          .shareToWhatsApp(msg: "Hallo das ist ein Test");
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
+                                  !kIsWeb
+                                      ? IconButton(
+                                          icon:
+                                              FaIcon(FontAwesomeIcons.whatsapp),
+                                          onPressed: () {
+                                            FlutterShareMe().shareToWhatsApp(
+                                                msg:
+                                                    "Tritt meiner WG bei. Dein Code: ${app.comID}");
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      : SizedBox.shrink(),
                                   IconButton(
                                     icon: Icon(Icons.content_copy),
                                     onPressed: () {
-                                      //Zwischenablage
-                                      Navigator.of(context).pop();
+                                      _toClipboard(app.comID);
                                     },
                                   ),
                                 ],
                               );
                             });
                       },
-                      child: Text("Einladungslink versenden"),
+                      child: Text("Einladung-Code versenden"),
                     ),
                   ),
                 ),
@@ -147,8 +165,7 @@ class CommuneOverview extends StatelessWidget {
                                   new FlatButton(
                                     child: new Text("Sicher"),
                                     onPressed: () {
-                                      print("austreten!!");
-                                      Navigator.of(context).pop();
+                                      _leave();
                                     },
                                   ),
                                   new FlatButton(

@@ -45,3 +45,17 @@ func (s *Server) joinCommune(c *gin.Context) {
 	}
 	lib.Jsonify(c, nil, 1, err)
 }
+
+func (s *Server) leaveCommune(c *gin.Context) {
+	var input data.Commune
+	err := c.BindJSON(&input)
+	if err != nil {
+		log.Println(err)
+	}
+	err = s.graph.LeaveCommune(&input)
+	if err != nil {
+		log.Println(err)
+	}
+
+	lib.Jsonify(c, nil, 1, err)
+}
