@@ -59,32 +59,19 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
 	return comWrap.Root[0], nil
 }
 
-// LeaveCommune lets a user leave a commune
-func (s *DGraph) LeaveCommune(com *Commune) error {
-	var (
-		err      error
-		userList []User
-	)
-	userGUID := com.Members[0].GUID
-	communeFromDB, err := s.FetchCommuneByID(com.GUID)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	duties, _, err := s.FetchDutiesByID(com.GUID)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	consumables, _, err := s.FetchConsumablesByID(com.GUID)
+func (s *DGraph) checkDuties(comID, userID string) error {
+	duties, _, err := s.FetchDutiesByID(comID)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
 	if duties != nil {
+		var userList []User
 		for _, duty := range duties.([]Duty) {
 			update := false
 			userList = []User{}
 			for _, member := range duty.RotationList {
-				if member.GUID == userGUID {
+				if member.GUID == userID {
 					update = true
 					continue
 				}
@@ -92,7 +79,7 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 			}
 			if update {
 				if len(duty.RotationList) == 1 {
-					err = s.DeleteDuty(&Commune{GUID: com.GUID, Duties: []Duty{
+					err = s.DeleteDuty(&Commune{GUID: comID, Duties: []Duty{
 						duty,
 					}})
 					continue
@@ -109,12 +96,22 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 		}
 	}
 
+	return err
+}
+
+func (s *DGraph) checkConsumables(comID, userID string) error {
+	consumables, _, err := s.FetchConsumablesByID(comID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	if consumables != nil {
+		var userList []User
 		for _, consumable := range consumables.([]Consumable) {
 			update := false
 			userList = []User{}
 			for _, member := range consumable.RotationList {
-				if member.GUID == userGUID {
+				if member.GUID == userID {
 					update = true
 					continue
 				}
@@ -122,7 +119,7 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 			}
 			if update {
 				if len(consumable.RotationList) == 1 {
-					err = s.DeleteConsumable(&Commune{GUID: com.GUID, Consumables: []Consumable{
+					err = s.DeleteConsumable(&Commune{GUID: comID, Consumables: []Consumable{
 						consumable,
 					}})
 					continue
@@ -137,6 +134,28 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 		if err != nil {
 			return errors.WithStack(err)
 		}
+	}
+}
+
+// LeaveCommune lets a user leave a commune
+func (s *DGraph) LeaveCommune(com *Commune) error {
+	var (
+		err      error
+		userList []User
+	)
+	userGUID := com.Members[0].GUID
+
+	if err = s.checkDuties(com.GUID, userGUID); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err = s.checkConsumables(com.GUID, userGUID); err != nil {
+		return errors.WithStack(err)
+	}
+
+	communeFromDB, err := s.FetchCommuneByID(com.GUID)
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	userList = []User{}
