@@ -135,6 +135,7 @@ func (s *DGraph) checkConsumables(comID, userID string) error {
 			return errors.WithStack(err)
 		}
 	}
+	return err
 }
 
 // LeaveCommune lets a user leave a commune
