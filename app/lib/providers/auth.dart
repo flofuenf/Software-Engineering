@@ -19,36 +19,4 @@ class Auth with ChangeNotifier {
   });
 
   bool isAuth() => this.userID != null && this.atExp.isAfter(DateTime.now()) && rtExp.isAfter(DateTime.now()) && this.accessToken != null && this.refreshToken != null;
-
-  Future<void> authentication() async{
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!prefs.containsKey('authData')) {
-        return;
-      }
-
-      final prefsData =
-      json.decode(prefs.getString('authData')) as Map<String, Object>;
-        userID = prefsData['userID'];
-        accessToken = prefsData['accessToken'];
-        refreshToken = prefsData['refreshToken'];
-        atExp = DateTime.fromMillisecondsSinceEpoch(
-            int.parse(prefsData['atExp']) * 1000);
-        rtExp = DateTime.fromMillisecondsSinceEpoch(
-            int.parse(prefsData['rtExp']) * 1000);
-
-      if (!atExp.isAfter(DateTime.now())) {
-        print("refresh token");
-      }
-//      auth.rtExp = DateTime.now().subtract(Duration(days: 1));
-
-      if (!rtExp.isAfter(DateTime.now())) {
-        print("refresh Refresh");
-      }
-      notifyListeners();
-    } catch (err) {
-      print(err);
-      throw(err);
-    }
-  }
 }

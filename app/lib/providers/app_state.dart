@@ -24,10 +24,6 @@ class AppState with ChangeNotifier {
   });
 
   bool get isLoaded {
-    print(user != null &&
-        commune != null &&
-        auth.accessToken != null &&
-        auth.atExp.isAfter(DateTime.now()));
     return (user != null && commune != null && auth.isAuth());
   }
 
@@ -61,7 +57,6 @@ class AppState with ChangeNotifier {
     }
     if (user == null) {
       try {
-        print(auth.userID);
         await fetchUser(auth.userID);
       } catch (err) {
         print(err);
@@ -85,7 +80,6 @@ class AppState with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (!prefs.containsKey('authData')) {
-        print("no authData");
         return;
       }
       final prefsData =
@@ -135,8 +129,6 @@ class AppState with ChangeNotifier {
   }
 
   Future<void> fetchCommune(String comID) async {
-    print("get commune");
-    print(comID);
     final body = '''{
         "uid": "$comID"
       }''';
@@ -156,7 +148,6 @@ class AppState with ChangeNotifier {
     }
 
     try {
-      print("try");
       var data = await GraphHelper.postSecure(
           body, "api/communeGet", auth.accessToken);
       commune = Commune(
@@ -223,7 +214,6 @@ class AppState with ChangeNotifier {
   }
 
   Future<void> join(Map<String, String> input) async {
-    print("join");
     final body = '''{
       "uid": \"${input['comID']}\",
       "members": [
@@ -243,7 +233,6 @@ class AppState with ChangeNotifier {
   }
 
   Future<void> register(Map<String, String> input) async {
-    print("register here");
     final body = '''{
       "mail": \"${input['mail']}\",
       "pass": \"${input['pass']}\",

@@ -91,7 +91,8 @@ class Duties with ChangeNotifier {
       for (int i = 0; i < list.length; i++) {
         sb.write('''
         {
-          "uid": "${list[i].uid}"
+          "uid": "${list[i].uid}",
+          "commune": "${list[i].commune}"
         }
         ''');
         if (i + 1 < list.length) {
@@ -136,7 +137,8 @@ class Duties with ChangeNotifier {
       for (int i = 0; i < list.length; i++) {
         sb.write('''
         {
-          "uid": "${list[i].uid}"
+          "uid": "${list[i].uid}",
+          "commune": "${list[i].commune}"
         }
         ''');
         if (i + 1 < list.length) {
@@ -200,9 +202,7 @@ class Duties with ChangeNotifier {
                 DateTime.fromMillisecondsSinceEpoch(duty['created'] * 1000),
             changed:
                 DateTime.fromMillisecondsSinceEpoch(duty['changed'] * 1000),
-            lastDone: duty['lastDone'] != null
-                ? DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000)
-                : DateTime.fromMillisecondsSinceEpoch(0),
+            lastDone: DateTime.fromMillisecondsSinceEpoch(duty['lastDone'] * 1000),
             nextDone:
                 DateTime.fromMillisecondsSinceEpoch(duty['nextDone'] * 1000),
             rotationList: rotMember,

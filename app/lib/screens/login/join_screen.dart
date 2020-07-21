@@ -98,7 +98,6 @@ class _InviteFormState extends State<InviteForm> {
     _joinData['userID'] = Provider.of<AppState>(context).user.uid;
 
     if(_joinData['comID'].length > 1 && _joinData['userID'].length > 1){
-      print(_joinData);
       try{
         await Provider.of<AppState>(context, listen: false).join(_joinData);
         Navigator.of(context).pop();

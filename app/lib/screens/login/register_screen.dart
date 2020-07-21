@@ -73,7 +73,6 @@ class _RegisterFormState extends State<RegisterForm> {
   bool _checkMap(Map<String, String> map) {
     bool complete = false;
     map.forEach((key, value) {
-      print(value);
       value.length > 0 ? complete = true : complete = false;
     });
     return complete;

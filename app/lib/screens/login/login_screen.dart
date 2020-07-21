@@ -154,9 +154,6 @@ class _AuthFormState extends State<AuthForm> {
               }
               return null;
             },
-            onSaved: (value) {
-              print(value);
-            },
           ),
           SizedBox(height: 15),
           TextFormField(
@@ -199,9 +196,6 @@ class _AuthFormState extends State<AuthForm> {
                 return "Bitte gib ein Passwort ein";
               }
               return null;
-            },
-            onSaved: (value) {
-              print(value);
             },
           ),
           Row(

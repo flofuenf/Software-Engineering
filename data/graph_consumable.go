@@ -43,6 +43,7 @@ func (s *DGraph) FetchConsumablesByID(guid string) (interface{}, int, error) {
 							rotationList{
 								uid
 								name
+								commune
 							}
           				}
         			}
@@ -107,6 +108,7 @@ func (s *DGraph) FetchSingleConsumableByID(guid string) (Consumable, int, error)
 							rotationList{
 								uid
 								name
+								commune
 							}
         			}
 				}`

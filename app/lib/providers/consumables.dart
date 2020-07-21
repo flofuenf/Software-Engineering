@@ -28,7 +28,8 @@ class Consumables with ChangeNotifier {
       for (int i = 0; i < list.length; i++) {
         sb.write('''
         {
-          "uid": "${list[i].uid}"
+          "uid": "${list[i].uid}",
+          "commune": "${list[i].commune}"
         }
         ''');
         if (i + 1 < list.length) {
@@ -71,7 +72,8 @@ class Consumables with ChangeNotifier {
       for (int i = 0; i < list.length; i++) {
         sb.write('''
         {
-          "uid": "${list[i].uid}"
+          "uid": "${list[i].uid}",
+          "commune": "${list[i].commune}"
         }
         ''');
         if (i + 1 < list.length) {

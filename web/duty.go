@@ -57,11 +57,12 @@ func (s *Server) setDutyDone(c *gin.Context) {
 
 func (s *Server) setDuty(c *gin.Context) {
 	var duty data.Duty
+
 	err := c.BindJSON(&duty)
 	if err != nil {
 		log.Println(err)
 	}
-
+	log.Println(duty.RotationList[0].Commune)
 	guid, count, err := s.graph.UpdateDuty(&duty)
 	if err != nil {
 		guid = ""

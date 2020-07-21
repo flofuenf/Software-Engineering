@@ -1,6 +1,7 @@
 package data
 
 import (
+	"log"
 	"time"
 
 	"github.com/pkg/errors"
@@ -38,15 +39,15 @@ func (s *DGraph) DeleteDuty(com *Commune) error {
 func (s *DGraph) UpdateDuty(duty *Duty) (string, int, error) {
 	duty.DGraphType = dutyType
 	duty.Changed = time.Now().Unix()
-
-	err := s.deletePredicateDB(duty.GUID, "rotationList")
-	if err == nil {
-		_, err := s.mutateDB(duty)
-		if err != nil {
-			return "", 0, errors.WithStack(err)
-		}
-	}
-	return duty.GUID, 1, err
+	log.Println(duty.RotationList[0].Commune)
+	// err := s.deletePredicateDB(duty.GUID, "rotationList")
+	// if err == nil {
+	// 	_, err := s.mutateDB(duty)
+	// 	if err != nil {
+	// 		return "", 0, errors.WithStack(err)
+	// 	}
+	// }
+	return duty.GUID, 1, nil
 }
 
 // SetDutyAsDone sets a Duty as done and recalculates the timestamps
@@ -94,6 +95,7 @@ func (s *DGraph) FetchSingleDutyByID(guid string) (Duty, int, error) {
 							rotationList{
 								uid
 								name
+								commune
 							}
         			}
 				}`
@@ -129,6 +131,7 @@ func (s *DGraph) FetchDutiesByID(guid string) (interface{}, int, error) {
 							rotationList{
 								uid
 								name
+								commune
 							}
           				}
         			}

@@ -46,6 +46,7 @@ func (s *DGraph) FetchCommuneByID(guid string) (interface{}, error) {
 							name
 							birth
 							created
+							commune
 						}
         			}
 				}`
