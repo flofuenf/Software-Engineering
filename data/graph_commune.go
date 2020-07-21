@@ -85,6 +85,9 @@ func (s *DGraph) checkDuties(comID, userID string) error {
 					continue
 				}
 				duty.RotationList = userList
+				if int(duty.RotationIndex) >= len(duty.RotationList)-1 {
+					duty.RotationIndex = 0
+				}
 				newDuty := duty
 				if guid, _, err := s.UpdateDuty(&newDuty); guid == "" || err != nil { // golint
 					return errors.WithStack(err)
@@ -125,6 +128,9 @@ func (s *DGraph) checkConsumables(comID, userID string) error {
 					continue
 				}
 				consumable.RotationList = userList
+				if int(consumable.RotationIndex) >= len(consumable.RotationList)-1 {
+					consumable.RotationIndex = 0
+				}
 				newCon := consumables.(Consumable)
 				if guid, _, err := s.UpdateConsumable(&newCon); guid == "" || err != nil { // golint
 					return errors.WithStack(err)
