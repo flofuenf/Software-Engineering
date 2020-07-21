@@ -2,6 +2,7 @@ import 'package:CommuneIsm/providers/auth.dart';
 import 'package:CommuneIsm/providers/consumables.dart';
 import 'package:CommuneIsm/providers/duties.dart';
 import 'package:CommuneIsm/screens/edit_duty_screen.dart';
+import 'package:CommuneIsm/screens/login/create_commune_screen.dart';
 import 'package:CommuneIsm/screens/login/join_screen.dart';
 import 'package:CommuneIsm/screens/login/login_screen.dart';
 import 'package:CommuneIsm/screens/login/welcome_screen.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
                           : WelcomeScreen(),
                 ),
           routes: {
+            CreateCommuneScreen.routeName: (ctx) => app.isAuth ? CreateCommuneScreen() : WelcomeScreen(),
             WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
             CommuneOverview.routeName: (ctx) =>
                 app.isLoaded ? CommuneOverview() : CircularProgressIndicator(),
@@ -85,7 +87,6 @@ class MyApp extends StatelessWidget {
                 app.isLoaded ? Dashboard() : LoginScreen(),
             RegisterScreen.routeName: (ctx) =>
                 app.isLoaded ? Dashboard() : RegisterScreen(),
-            JoinScreen.routeName: (ctx) => JoinScreen(),
           },
         ),
       ),

@@ -1,10 +1,9 @@
 import 'package:CommuneIsm/providers/app_state.dart';
+import 'package:CommuneIsm/screens/login/create_commune_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class JoinScreen extends StatelessWidget {
-  static const routeName = "/join";
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -52,6 +51,7 @@ class JoinScreen extends StatelessWidget {
                       ),
                       RaisedButton(
                         onPressed: () {
+                          Navigator.of(context).pushNamed(CreateCommuneScreen.routeName);
                         },
                         child: Text("WG erstellen"),
                       ),
@@ -107,7 +107,7 @@ class _InviteFormState extends State<InviteForm> {
           builder: (BuildContext context) {
             // return object of type Dialog
             return AlertDialog(
-              title: Text("Registration fehlgeschlagen"),
+              title: Text("Beitritt fehlgeschlagen"),
               content: Text(err),
               actions: <Widget>[
                 // usually buttons at the bottom of the dialog

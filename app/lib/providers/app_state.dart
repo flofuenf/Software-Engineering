@@ -283,4 +283,34 @@ class AppState with ChangeNotifier {
       throw(err);
     }
   }
+
+  Future<void> createCommune(Commune com) async{
+    String newComID = "";
+    final body = '''{
+      "name": \"${com.name}\",
+      "description": \"${com.description}\",
+      "address": {
+         "street": \"${com.address.street}\",  
+         "city": \"${com.address.city}\",  
+         "zip": \"${com.address.zip}\"  
+       }
+    }''';
+    try{
+      newComID = await GraphHelper.postSecure(body, "api/commune", auth.accessToken);
+    }catch(err){
+      print(err);
+      throw(err);
+    }
+
+    try{
+      await this.join({
+        'comID': newComID,
+        'userID': user.uid,
+      });
+      notifyListeners();
+    }catch(err){
+      print(err);
+      throw(err);
+    }
+  }
 }

@@ -8,7 +8,7 @@ class Address {
   final String zip;
 
   Address({
-    @required this.uid,
+    this.uid,
     this.created,
     @required this.street,
     @required this.city,
