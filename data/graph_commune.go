@@ -98,7 +98,8 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 					continue
 				}
 				duty.RotationList = userList
-				if guid, _, err := s.UpdateDuty(&duty); guid == "" || err != nil { // golint
+				newDuty := duty
+				if guid, _, err := s.UpdateDuty(&newDuty); guid == "" || err != nil { // golint
 					return errors.WithStack(err)
 				}
 			}
@@ -127,7 +128,8 @@ func (s *DGraph) LeaveCommune(com *Commune) error {
 					continue
 				}
 				consumable.RotationList = userList
-				if guid, _, err := s.UpdateConsumable(&consumable); guid == "" || err != nil { // golint
+				newCon := consumables.(Consumable)
+				if guid, _, err := s.UpdateConsumable(&newCon); guid == "" || err != nil { // golint
 					return errors.WithStack(err)
 				}
 			}
