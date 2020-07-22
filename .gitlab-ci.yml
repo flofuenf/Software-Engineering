@@ -15,48 +15,6 @@ stages:
   - verify
   - containerize
 
-#build_static:
-#  image: openjdk:8-jdk
-#  stage: .pre
-#  allow_failure: false
-#  variables:
-#    ANDROID_COMPILE_SDK: "28"
-#    ANDROID_BUILD_TOOLS: "28.0.2"
-#    ANDROID_SDK_TOOLS:   "4333796"
-#    FLUTTER_VERSION: "https://storage.googleapis.com/flutter_infra/releases/beta/linux/flutter_linux_1.17.0-dev.3.1-beta.tar.xz"
-#  before_script:
-#    - apt-get --quiet update --yes
-#    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-#    - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-#    - unzip -d android-sdk-linux android-sdk.zip
-#    - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-#    - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
-#    - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-#    - export ANDROID_HOME=$PWD/android-sdk-linux
-#    - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-#    # temporarily disable checking for EPIPE error and use yes to accept all licenses
-#    - set +o pipefail
-#    - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
-#    - set -o pipefail
-#    # flutter sdk setup
-#    - wget --output-document=flutter-sdk.tar.xz $FLUTTER_VERSION
-#    - tar -xf flutter-sdk.tar.xz
-#    - export PATH=$PATH:$PWD/flutter/bin
-#    #- echo flutter.sdk=$PWD/flutter > android/local.properties
-#  #tags:
-#    #- unix
-#    #- docker
-#    #- multi
-#  script:
-#    - cd ./app
-#    - flutter config --enable-web
-#    - flutter pub get
-#    - flutter build web
-#    - cd ..
-#    - mv ./app/build/web ./static
-#    - cd ./static
-#    - ls -la
-
 build_app:
   image: golang:1.13.3
   stage: build
@@ -104,8 +62,6 @@ containerize_app:
   services:
     - docker:stable-dind
   variables:
-    DOCKER_USER: flofuenf
-    DOCKER_PASS: Docker@2020
     DOCKERHOST: tcp://docker:2376
     DOCKER_REGISTRY:  https://index.docker.io/v1/
     IMAGE_TAG: $DOCKER_REGITRY/communeism:$CI_COMMIT_TAG
