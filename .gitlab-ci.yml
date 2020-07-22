@@ -62,6 +62,8 @@ containerize_app:
   services:
     - docker:stable-dind
   variables:
+    DOCKER_USER: flofuenf
+    DOCKER_PASS: Docker@2020
     DOCKERHOST: tcp://docker:2376
     DOCKER_REGISTRY:  https://index.docker.io/v1/
     IMAGE_TAG: $DOCKER_REGITRY/communeism:$CI_COMMIT_TAG
