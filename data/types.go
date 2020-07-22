@@ -73,7 +73,7 @@ type Duty struct {
 	Changed       int64  `json:"changed,omitempty"`
 	Name          string `json:"name,omitempty"`
 	Description   string `json:"description,omitempty"`
-	LastDone      int64  `json:"lastDone,omitempty"`
+	LastDone      int64  `json:"lastDone"`
 	NextDone      int64  `json:"nextDone,omitempty"`
 	RotationTime  int64  `json:"rotationTime,omitempty"`
 	RotationIndex int64  `json:"rotationIndex"`
