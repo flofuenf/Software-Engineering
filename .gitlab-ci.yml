@@ -62,8 +62,8 @@ containerize_app:
   services:
     - docker:stable-dind
   variables:
-    DOCKER_REGISTRY:  registry.gitlab.com/flofuenf
-    IMAGE_TAG: $DOCKER_REGITRY/communeism:$CI_COMMIT_TAG
+    DOCKER_USER: flofuenf
+    DOCKER_PASS: Docker@2020
   allow_failure: false
   only:
     - tags
@@ -72,7 +72,8 @@ containerize_app:
     - echo $IMAGE_TAG
     - echo $CI_REGISTRY_IMAGE
     - echo $CI_COMMIT_REF_SLUG
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
     - docker build -t flofuenf/communeism:$CI_COMMIT_TAG -f ./Dockerfile .
-    - docker push registry.gitlab.com/flofuenf/communeism:$CI_COMMIT_TAG
+    - docker push flofuenf/communeism:$CI_COMMIT_TAG
     - docker rmi $(docker images --quiet --filter "dangling=true") || true
     - docker volume rm $(docker volume ls -qf dangling=true) || true
