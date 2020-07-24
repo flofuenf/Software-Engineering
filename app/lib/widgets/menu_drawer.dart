@@ -41,7 +41,7 @@ class MenuDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: Text(
-                    "Your Commune",
+                    "Deine WG",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -58,7 +58,7 @@ class MenuDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: Text(
-                    "Duties",
+                    "Dienste",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -75,7 +75,7 @@ class MenuDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: Text(
-                    "Consumables",
+                    "Gegenstände",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -95,7 +95,7 @@ class MenuDrawer extends StatelessWidget {
                     color: Colors.white,
                   ),
                   title: Text(
-                    "Logout",
+                    "Ausloggen",
                     style: TextStyle(
                       color: Colors.white,
                     ),
