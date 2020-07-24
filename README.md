@@ -6,5 +6,6 @@ Es wird nichts weiter benötigt als ein Docker Dienst mit folgendem Netzwerk: 19
 Hinweis: Aus Zeitmangel war es mir leider nicht möglich sauberen Code zu schreiben, sowie richtiges Error-Handling zu implementieren.... Ich habe mein bestes gegeben um möglichst viele Funktionen abzudecken. Ich hoffe Sie haben Verständnis dafür.
 
 Da ich die App später weiterentwickeln, bzw. ordentlich umsetzen möchte, bin ich um jedes Kommentar oder jeden Tip dankbar.
+Falls etwas nicht funktioniert, gerne direkt an mich wenden (florian.kunzweiler@dwarftech.de)
 
 Viele Grüße und bleiben Sie gesund
