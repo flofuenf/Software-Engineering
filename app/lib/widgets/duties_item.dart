@@ -73,7 +73,7 @@ class _DutiesItemState extends State<DutiesItem> {
           Column(
             children: <Widget>[
               Container(
-                color: Colors.deepOrange,
+                color: due > 0 ? Colors.green : Colors.deepOrange,
                 width: double.infinity,
                 height: 40,
                 child: Padding(

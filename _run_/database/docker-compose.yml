@@ -1,0 +1,10 @@
+version: "3"
+services:
+  dgraph:
+    image: flofuenf/comgr:latest
+    ports:
+      - 8005:8000
+      - 8082:8080
+      - 9000:9000
+      - 9082:9080
+    restart: always
