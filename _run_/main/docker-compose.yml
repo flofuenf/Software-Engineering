@@ -1,0 +1,11 @@
+version: '3'
+services:
+    communeism:
+        image: flofuenf/communeism:latest
+        restart: always
+        ports:
+          - 8000:8000
+        environment:
+          - ACCSECRET=secret0
+          - REFSECRET=secret1
+          - PORT=8000
